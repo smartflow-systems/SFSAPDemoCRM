@@ -1,0 +1,204 @@
+You are an expert full‑stack engineer. Build a production‑ready, lightweight CRM web app called “[APP NAME]” for [INDUSTRY e.g., HOME SERVICES] using the brand theme:
+- Primary bg: dark brown
+- Secondary bg: black
+- Accents: shiny metallic gold for text, borders, buttons
+
+## TECH CHOICES
+- Prefer: Django + Django REST Framework + HTMX (server-rendered) + TailwindCSS
+- Alt (if you judge faster here): Next.js (App Router) + Prisma + TailwindCSS
+- DB: PostgreSQL (use Supabase in dev), with migrations and seed data
+- Auth: email/password with sessions (and role-based RBAC)
+
+## CORE ENTITIES & FEATURES
+- Entities: Accounts, Contacts, Leads, Opportunities (with stages), Activities (notes/calls/emails), Pipelines
+- Kanban pipeline (drag & drop)
+- Reminders: next actions, due dates, overdue alerts
+- Global search, segment filters, tags
+- CSV export: Accounts, Leads, Opportunities
+- Dashboard KPIs: leads this month, conversion rate, pipeline value, activities due today
+- Roles: Admin, Manager, Sales Rep (Admin manages pipelines/roles/settings; Managers reassign; Reps see their own)
+
+## EMAIL + INTEGRATIONS
+- “Log an email” modal saved as Activity
+- Zapier-compatible webhook endpoint to ingest leads -> store in Leads with a “source” field
+
+## REMINDERS
+- “My Tasks” page (today + overdue)
+- Daily email digest at 08:00 local time per user with their tasks
+
+## PRIVACY & AUDIT
+- Field-level permissions for sensitive fields (deal value)
+- Audit log for create/update/delete (who/what/when)
+
+## THEME: DARK BROWN / BLACK / SHINY GOLD
+Create a global stylesheet and Tailwind config that produce a real metallic gold (not flat yellow), animated gold headings, gold borders, glowing gold buttons, and matching input focus rings. Use these exact snippets and wire them into the app (link CSS in base template/layout and apply classes in components).
+
+### 1) GLOBAL CSS (e.g., static/styles/theme.css or src/styles/theme.css)
+[CREATE THIS FILE WITH EXACT CONTENT]
+:root{
+  --brown-900:#4B2E2E;
+  --black-900:#0A0A0A;
+  --gold-100:#FFF7CC;
+  --gold-300:#FFE58A;
+  --gold-500:#FFD700;
+  --gold-600:#E6C200;
+  --gold-700:#B58E00;
+  --gold-800:#7A5A00;
+  --gold-gradient: linear-gradient(90deg,#7a5a00 0%,#b58e00 16%,#ffd700 33%,#fff1a6 45%,#e6c200 55%,#b58e00 72%,#7a5a00 100%);
+}
+html,body{ background:var(--brown-900); color:var(--gold-100); }
+
+/* metallic gold text */
+.text-gold{
+  background:var(--gold-gradient);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+/* animated gold shine */
+.text-gold-shine{
+  position:relative; background:var(--gold-gradient); background-size:200% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:gold-pan 3.2s linear infinite;
+}
+@keyframes gold-pan{ 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+
+/* metallic border wrapper */
+.border-gold{ position:relative; border-radius:10px; }
+.border-gold::before{
+  content:""; position:absolute; inset:0; padding:1px; border-radius:inherit;
+  background:var(--gold-gradient);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+
+/* dark panel */
+.panel-dark{
+  background: radial-gradient(60% 80% at 50% 20%, #120C0C 0%, #0A0A0A 60%, #070707 100%);
+}
+
+/* buttons */
+.btn-gold{
+  display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
+  padding:.7rem 1.1rem; font-weight:700; letter-spacing:.3px;
+  color:#0A0A0A; background:var(--gold-gradient); border-radius:.6rem; border:none;
+  box-shadow:0 0 0 0 rgba(255,215,0,0);
+  transition:transform .08s ease, box-shadow .2s ease, filter .2s ease;
+}
+.btn-gold:hover{ filter:brightness(1.05); box-shadow:0 0 18px 0 rgba(255,215,0,.35); }
+.btn-gold:active{ transform:translateY(1px) scale(.99); }
+.btn-gold:focus-visible{ outline:none; box-shadow:0 0 0 3px #000, 0 0 0 5px rgba(255,215,0,.6); }
+
+/* ghost button with gold edge */
+.btn-gold-ghost{
+  background:transparent; color:var(--gold-300); border-radius:.6rem; padding:.65rem 1rem; position:relative;
+}
+.btn-gold-ghost::before{
+  content:""; position:absolute; inset:0; padding:1px; border-radius:inherit;
+  background:var(--gold-gradient);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.btn-gold-ghost:hover{ color:var(--gold-100); }
+
+/* inputs */
+.input-dark{
+  width:100%; background:#120C0C; color:var(--gold-100);
+  border:1px solid #1f1a1a; border-radius:.55rem; padding:.6rem .8rem;
+}
+.input-dark::placeholder{ color:#8f7f60; }
+.input-dark:focus{ outline:none; border-color:var(--gold-600); box-shadow:0 0 0 3px rgba(181,142,0,.25); }
+
+/* misc */
+.hr-gold{ height:1px; border:0; background:var(--gold-gradient); opacity:.9; }
+.badge-gold{
+  display:inline-block; padding:.25rem .5rem; background:linear-gradient(180deg,#2a1b1b,#0d0b0b);
+  border-radius:.5rem; color:var(--gold-300); border:1px solid transparent; position:relative;
+}
+.badge-gold::before{
+  content:""; position:absolute; inset:0; padding:1px; border-radius:inherit; background:var(--gold-gradient);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+}
+.table thead th{ background:#120C0C; color:var(--gold-300); border-bottom:2px solid #39260a; }
+
+### 2) TAILWIND CONFIG (tailwind.config.js)
+[CREATE OR MERGE THIS CONFIG]
+module.exports = {
+  content: [
+    "./templates/**/*.{html,js,ts,tsx,jsx}",
+    "./**/*.{html,js,ts,tsx,jsx}",
+    "./src/**/*.{js,ts,tsx,jsx}"
+  ],
+  theme: {
+    extend: {
+      colors:{
+        brown:{900:"#4B2E2E"},
+        black:{900:"#0A0A0A"},
+        gold:{100:"#FFF7CC",300:"#FFE58A",500:"#FFD700",600:"#E6C200",700:"#B58E00",800:"#7A5A00"}
+      },
+      boxShadow:{ gold:"0 0 18px 0 rgba(255,215,0,.35)" },
+      backgroundImage:{ "gold-gradient":"linear-gradient(90deg,#7a5a00 0%,#b58e00 16%,#ffd700 33%,#fff1a6 45%,#e6c200 55%,#b58e00 72%,#7a5a00 100%)" }
+    }
+  },
+  plugins:[]
+}
+
+### 3) TAILWIND COMPONENT SHORTCUTS (optional, add to a CSS file processed by Tailwind)
+@layer components{
+  .tw-text-gold{ @apply bg-[image:var(--gold-gradient)] bg-clip-text text-transparent; }
+  .tw-btn-gold{ @apply font-bold px-4 py-3 rounded-md text-black shadow transition; background-image:var(--gold-gradient); }
+  .tw-btn-gold:hover{ @apply shadow-gold; filter:brightness(1.05); }
+  .tw-border-gold{ position:relative; border-radius:.6rem; }
+  .tw-border-gold::before{
+    content:""; position:absolute; inset:0; padding:1px; border-radius:inherit;
+    background-image:var(--gold-gradient);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+}
+
+### 4) WIRE UP THE THEME
+- Include Tailwind build and link `theme.css` in base layout:
+  * Django base template: load `{% static 'styles/theme.css' %}` after Tailwind.
+  * Next.js: import `./styles/theme.css` in `app/layout.tsx` AFTER Tailwind import.
+- Apply classes in real views:
+  * Page headings: `class="text-gold-shine text-3xl font-extrabold"`
+  * Primary CTAs: `class="btn-gold"`
+  * Secondary CTAs: `class="btn-gold-ghost"`
+  * Panels/cards: `class="panel-dark border-gold p-5 rounded-lg"`
+  * Inputs: `class="input-dark"`
+  * Dividers: `<hr class="hr-gold my-4" />`
+  * Badges: `class="badge-gold"`
+
+### 5) SAMPLE THEMED SECTIONS (ADD IN DASHBOARD + OPPORTUNITY VIEWS)
+<h1 class="text-gold-shine text-3xl font-extrabold">Pipeline Overview</h1>
+<div class="panel-dark border-gold p-5 mt-4 rounded-lg">
+  <p class="text-gold">This week’s deals</p>
+  <hr class="hr-gold my-4" />
+  <button class="btn-gold">Add Opportunity</button>
+  <button class="btn-gold-ghost ml-2">Export CSV</button>
+</div>
+
+## UI/UX REQUIREMENTS
+- Mobile‑first layouts, inline validation, gold‑on‑dark toasts, loading skeletons
+- Quick‑create (“Add Lead”) accessible from any page
+- Empty states with helpful copy (brand tone)
+
+## TESTS & QA
+- Unit: pipeline transitions, reminders logic, RBAC
+- Integration: webhook lead ingestion
+- E2E smoke: create lead → convert to opportunity → move across pipeline → log activity → export CSV
+
+## DEPLOYMENT (REPLIT)
+- Provide 1‑click Replit run/depoy config
+- `.env` template for: DATABASE_URL (Supabase), EMAIL_PROVIDER_API_KEY, WEBHOOK_SECRET, APP_BASE_URL, TZ
+- Health check endpoint `/healthz`
+- README: install/run, environment, migrations, seeding, backup strategy, and how to switch SQLite→Postgres if needed
+
+## BRANDING ASSETS
+- Use colors above; add logo from [LOGO_URL]; set meta tags + favicon
+- Generate 5 screenshot‑ready pages (Dashboard, Kanban, Lead detail, Activity log, My Tasks)
+
+## HANDOVER
+- Generate a concise “Client Handover” PDF (HTML → PDF) covering: user roles, adding users, editing settings, backups, and a 30‑day roadmap
+
+Deliver clean, well‑commented code and keep the theme consistent across all components and emails (gold headings and dividers on dark backgrounds). 

@@ -1,0 +1,86 @@
+You are an expert who builds ultra-fast sales demos. Create a branded, clickable CRM demo called “[APP NAME]” for [INDUSTRY] that a prospect can use right away.
+
+GOAL
+- Ship a gorgeous, dark brown/black UI with shiny gold accents and believable fake data.
+- Pages: Dashboard, Kanban Pipeline, Lead Detail (with Activity log).
+- No real auth; include a fake “Sign in as Demo User” gate and toast.
+- Make it feel real: sortable tables, drag & drop Kanban, CSV export (client-side), and a working “Add Lead” modal (in-memory).
+- One‑click run on Replit.
+
+STACK
+- Next.js (App Router) + TailwindCSS (preconfigured) + TypeScript
+- In-memory data store (file or React context) seeded with 30 Accounts, 60 Leads, 25 Opportunities across 4 stages, and 120 Activities
+- Lightweight drag & drop (e.g., dnd-kit) for Kanban
+- No DB, no server auth; keep it demo-fast
+
+BRAND THEME (apply everywhere)
+- Primary bg: dark brown (#4B2E2E)
+- Secondary bg: near-black (#0A0A0A)
+- Metallic gold gradient for text/borders/buttons:
+  linear-gradient(90deg,#7a5a00 0%,#b58e00 16%,#ffd700 33%,#fff1a6 45%,#e6c200 55%,#b58e00 72%,#7a5a00 100%)
+- Provide a `theme.css` with:
+  .text-gold, .text-gold-shine (animated), .border-gold, .panel-dark,
+  .btn-gold, .btn-gold-ghost, .input-dark, .hr-gold, .badge-gold
+- Import theme after Tailwind in `app/layout.tsx`
+- Add favicon + meta using [APP NAME] and [LOGO_URL if provided]
+
+PAGES & FEATURES
+1) Dashboard (`/`)
+   - H1 with `.text-gold-shine`
+   - KPI cards (Today’s Activities, Leads This Month, Win Rate %, Pipeline Value)
+   - Recent Activities list with timestamps
+   - CTA buttons: “Add Lead” (.btn-gold), “Export CSV” (.btn-gold-ghost)
+
+2) Pipeline (`/pipeline`)
+   - 4 default stages: New, Qualified, Proposal, Won/Lost (Won and Lost separated)
+   - Drag & drop opportunities between stages (updates in-memory data + recalculates KPIs)
+   - Each card: Account, Amount, Owner, Next action date, mini badge `.badge-gold`
+
+3) Lead Detail (`/leads/[id]`)
+   - Panel with Account + Contact info, tags, source
+   - Activities log (notes/calls/emails) with add-note modal
+   - Buttons: Convert to Opportunity, Mark Lost, Export Lead (.btn-gold / ghost)
+   - Right rail: “Next Action” date picker (in-memory)
+
+GLOBAL UI/UX
+- Fake sign-in page → click “Continue” to enter demo (show success toast)
+- Top nav: Dashboard | Pipeline | Leads (active state in gold)
+- “Add Lead” modal (name, company, email, source, owner) → pushes to in-memory store and shows toast
+- Client-side CSV export for Leads and Opportunities
+- Loading skeletons and empty states in brand palette
+- All inputs use `.input-dark` with gold focus ring
+
+DATA
+- Seed realistic names, companies, amounts, owners, and dates this month
+- Provide `seed.ts` util and a “Reset Demo Data” button in footer
+
+TAILWIND SETUP
+- Extend colors: brown.900 #4B2E2E, black.900 #0A0A0A, gold scale (100,300,500,600,700,800)
+- Add backgroundImage "gold-gradient" (the metallic gradient above)
+- Add shadow "shadow-gold: 0 0 18px 0 rgba(255,215,0,.35)"
+
+CODE SNIPPETS TO INCLUDE (exact):
+- `theme.css` with the gold gradient text, borders, buttons, inputs (metallic styles)
+- Example usage in components:
+  <h1 className="text-gold-shine text-3xl font-extrabold">Pipeline Overview</h1>
+  <div className="panel-dark border-gold p-5 rounded-lg">…</div>
+  <button className="btn-gold">Add Opportunity</button>
+  <input className="input-dark" placeholder="Search…" />
+
+QUALITY BAR
+- Type-safe components and minimal state management (Context or Zustand)
+- Accessibility: focus styles, aria labels on drag handles, semantic headings
+- Clean file structure: app/(pages)/, components/ui/, lib/seed/, styles/theme.css
+
+DELIVERABLES
+- Running demo on Replit with `npm run dev` script wired
+- README with: 1) What’s included 2) How to customize logo/colors 3) Where to swap fake data 4) How to export screenshots for the sales deck (provide 5 screenshot-ready views)
+- Optional: a simple “Pricing” page stub with three tiers and feature bullets (for sales calls)
+
+OUT OF SCOPE (for speed)
+- Real auth, DB, webhooks, emails. (Place TODO notes where they would go in the full build.)
+
+Finish by printing a short “Next Steps” block in the console with: 
+- how to change logo/color
+- where to add more stages
+- command to reset demo data.
