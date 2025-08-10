@@ -1,0 +1,246 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brown-900: hsl(14, 24%, 23%);
+  --black-900: hsl(0, 0%, 4%);
+  --gold-100: hsl(51, 100%, 90%);
+  --gold-300: hsl(47, 100%, 75%);
+  --gold-500: hsl(51, 100%, 50%);
+  --gold-600: hsl(51, 100%, 45%);
+  --gold-700: hsl(45, 100%, 35%);
+  --gold-800: hsl(40, 100%, 24%);
+  --gold-gradient: linear-gradient(90deg, hsl(40, 100%, 24%) 0%, hsl(45, 100%, 35%) 16%, hsl(51, 100%, 50%) 33%, hsl(53, 100%, 82%) 45%, hsl(51, 100%, 45%) 55%, hsl(45, 100%, 35%) 72%, hsl(40, 100%, 24%) 100%);
+  
+  --background: hsl(14, 24%, 23%);
+  --foreground: hsl(51, 100%, 90%);
+  --card: hsl(0, 0%, 7%);
+  --card-foreground: hsl(51, 100%, 90%);
+  --popover: hsl(0, 0%, 4%);
+  --popover-foreground: hsl(51, 100%, 90%);
+  --primary: hsl(51, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 4%);
+  --secondary: hsl(0, 0%, 4%);
+  --secondary-foreground: hsl(51, 100%, 90%);
+  --muted: hsl(0, 0%, 7%);
+  --muted-foreground: hsl(47, 100%, 75%);
+  --accent: hsl(45, 100%, 35%);
+  --accent-foreground: hsl(0, 0%, 4%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(51, 100%, 90%);
+  --border: hsl(40, 100%, 24%);
+  --input: hsl(0, 0%, 7%);
+  --ring: hsl(51, 100%, 45%);
+}
+
+html, body { 
+  background: var(--brown-900); 
+  color: var(--gold-100); 
+  font-family: 'Inter', sans-serif;
+}
+
+/* Metallic gold text */
+.text-gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Animated gold shine */
+.text-gold-shine {
+  position: relative;
+  background: var(--gold-gradient);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gold-pan 3.2s linear infinite;
+}
+
+@keyframes gold-pan {
+  0% { background-position: 0% 0% }
+  100% { background-position: 200% 0% }
+}
+
+/* Metallic border wrapper */
+.border-gold {
+  position: relative;
+  border-radius: 10px;
+}
+
+.border-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--gold-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Dark panel */
+.panel-dark {
+  background: radial-gradient(60% 80% at 50% 20%, hsl(0, 0%, 7%) 0%, hsl(0, 0%, 4%) 60%, hsl(0, 0%, 3%) 100%);
+}
+
+/* Buttons */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .7rem 1.1rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: hsl(0, 0%, 4%);
+  background: var(--gold-gradient);
+  border-radius: .6rem;
+  border: none;
+  box-shadow: 0 0 0 0 rgba(255,215,0,0);
+  transition: transform .08s ease, box-shadow .2s ease, filter .2s ease;
+  cursor: pointer;
+}
+
+.btn-gold:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 0 18px 0 rgba(255,215,0,.35);
+}
+
+.btn-gold:active {
+  transform: translateY(1px) scale(.99);
+}
+
+.btn-gold:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px rgba(255,215,0,.6);
+}
+
+/* Ghost button with gold edge */
+.btn-gold-ghost {
+  background: transparent;
+  color: var(--gold-300);
+  border-radius: .6rem;
+  padding: .65rem 1rem;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-gold-ghost::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--gold-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.btn-gold-ghost:hover {
+  color: var(--gold-100);
+}
+
+/* Inputs */
+.input-dark {
+  width: 100%;
+  background: hsl(0, 0%, 7%);
+  color: var(--gold-100);
+  border: 1px solid hsl(12, 6%, 15%);
+  border-radius: .55rem;
+  padding: .6rem .8rem;
+}
+
+.input-dark::placeholder {
+  color: hsl(38, 34%, 44%);
+}
+
+.input-dark:focus {
+  outline: none;
+  border-color: var(--gold-600);
+  box-shadow: 0 0 0 3px rgba(181,142,0,.25);
+}
+
+/* Misc */
+.hr-gold {
+  height: 1px;
+  border: 0;
+  background: var(--gold-gradient);
+  opacity: .9;
+}
+
+.badge-gold {
+  display: inline-block;
+  padding: .25rem .5rem;
+  background: linear-gradient(180deg, hsl(12, 29%, 17%), hsl(0, 0%, 4%));
+  border-radius: .5rem;
+  color: var(--gold-300);
+  border: 1px solid transparent;
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-gold::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--gold-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.table thead th {
+  background: hsl(0, 0%, 7%);
+  color: var(--gold-300);
+  border-bottom: 2px solid hsl(40, 62%, 15%);
+}
+
+/* Kanban styles */
+.kanban-column {
+  min-height: 500px;
+}
+
+.kanban-card {
+  cursor: grab;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, hsl(0, 0%, 7%) 25%, hsl(9, 18%, 9%) 50%, hsl(0, 0%, 7%) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
