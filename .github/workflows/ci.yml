@@ -1,0 +1,15 @@
+name: CI (Reusable SFS)
+on:
+  push:
+    branches: [ "main", "sfs-power-20250928T235343Z", "dev", "release/**", "hotfix/**" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  use-reusable:
+    uses: smartflow-systems/SmartFlowSite/.github/workflows/sfs-ci-deploy.yml@main
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
