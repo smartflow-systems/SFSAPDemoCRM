@@ -4,7 +4,7 @@ export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {
+    extend:{ colors:{sf:{black:'var(--sf-black)',brown:'var(--sf-brown)',gold:'var(--sf-gold)',gold2:'var(--sf-gold-2)',beige:'var(--sf-beige)',white:'var(--sf-white)'}}, boxShadow:{glass:'0 8px 30px rgba(0,0,0,.3)'}, borderRadius:{'2xl':'1rem'}, 
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
