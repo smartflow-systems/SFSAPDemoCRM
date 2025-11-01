@@ -1,0 +1,296 @@
+/**
+ * SmartFlow Systems Design System
+ * Global CSS Variables & Utilities
+ * Version 1.0.0
+ *
+ * Sparkling gold with dark marble brown-tinted black aesthetic
+ * Import this file at the root of every SFS project
+ */
+
+:root {
+  /* ===== Brand Colors ===== */
+  --sfs-black: #0D0D0D;
+  --sfs-brown: #3B2F2F;
+  --sfs-gold: #FFD700;
+  --sfs-gold-hover: #E6C200;
+  --sfs-beige: #F5F5DC;
+  --sfs-white: #FFFFFF;
+
+  /* ===== Semantic Colors ===== */
+  --sfs-primary: var(--sfs-gold);
+  --sfs-primary-hover: var(--sfs-gold-hover);
+  --sfs-background: var(--sfs-black);
+  --sfs-surface: var(--sfs-brown);
+  --sfs-text: var(--sfs-beige);
+  --sfs-text-highlight: var(--sfs-white);
+  --sfs-border: rgba(255, 215, 0, 0.2);
+
+  /* ===== Glassmorphism - Card ===== */
+  --sfs-glass-blur: 12px;
+  --sfs-glass-bg: rgba(59, 47, 47, 0.4);
+  --sfs-glass-bg-hover: rgba(59, 47, 47, 0.5);
+  --sfs-glass-bg-active: rgba(59, 47, 47, 0.6);
+  --sfs-glass-border: rgba(255, 215, 0, 0.15);
+  --sfs-glass-shadow: 0 8px 32px 0 rgba(13, 13, 13, 0.37);
+  --sfs-glass-shadow-hover: 0 12px 48px 0 rgba(255, 215, 0, 0.15);
+
+  /* ===== Glassmorphism - Panel ===== */
+  --sfs-panel-blur: 16px;
+  --sfs-panel-bg: rgba(13, 13, 13, 0.7);
+  --sfs-panel-border: rgba(255, 215, 0, 0.25);
+
+  /* ===== Spacing ===== */
+  --sfs-space-xs: 4px;
+  --sfs-space-sm: 8px;
+  --sfs-space-md: 16px;
+  --sfs-space-lg: 24px;
+  --sfs-space-xl: 32px;
+  --sfs-space-2xl: 48px;
+  --sfs-space-3xl: 64px;
+
+  /* ===== Border Radius ===== */
+  --sfs-radius-sm: 4px;
+  --sfs-radius-md: 8px;
+  --sfs-radius-lg: 12px;
+  --sfs-radius-xl: 16px;
+  --sfs-radius-2xl: 24px;
+  --sfs-radius-round: 50%;
+  --sfs-radius-flow: 16px 4px; /* Crickit-inspired smooth curves */
+
+  /* ===== Shadows ===== */
+  --sfs-shadow-sm: 0 2px 8px rgba(13, 13, 13, 0.2);
+  --sfs-shadow-md: 0 4px 16px rgba(13, 13, 13, 0.3);
+  --sfs-shadow-lg: 0 8px 32px rgba(13, 13, 13, 0.37);
+  --sfs-shadow-xl: 0 12px 48px rgba(13, 13, 13, 0.4);
+  --sfs-shadow-gold: 0 0 20px rgba(255, 215, 0, 0.3);
+  --sfs-shadow-gold-strong: 0 0 40px rgba(255, 215, 0, 0.5);
+  --sfs-shadow-inner: inset 0 2px 8px rgba(13, 13, 13, 0.3);
+
+  /* ===== Dashboard Layout ===== */
+  --sfs-grid-gap: 24px;
+  --sfs-card-padding: 24px;
+  --sfs-header-height: 64px;
+  --sfs-sidebar-width: 280px;
+  --sfs-content-max-width: 1400px;
+
+  /* ===== Flow Dash - Crickit-Inspired ===== */
+  --sfs-curve-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --sfs-curve-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --sfs-curve-flow: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+
+  --sfs-transition-fast: 150ms;
+  --sfs-transition-normal: 250ms;
+  --sfs-transition-slow: 350ms;
+
+  /* ===== Typography ===== */
+  --sfs-font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --sfs-font-mono: 'Fira Code', 'Courier New', monospace;
+
+  --sfs-text-xs: 12px;
+  --sfs-text-sm: 14px;
+  --sfs-text-base: 16px;
+  --sfs-text-lg: 18px;
+  --sfs-text-xl: 20px;
+  --sfs-text-2xl: 24px;
+  --sfs-text-3xl: 30px;
+  --sfs-text-4xl: 36px;
+
+  --sfs-weight-normal: 400;
+  --sfs-weight-medium: 500;
+  --sfs-weight-semibold: 600;
+  --sfs-weight-bold: 700;
+
+  --sfs-leading-tight: 1.2;
+  --sfs-leading-normal: 1.5;
+  --sfs-leading-relaxed: 1.75;
+
+  /* ===== Breakpoints (for use in JS) ===== */
+  --sfs-breakpoint-mobile: 640px;
+  --sfs-breakpoint-tablet: 768px;
+  --sfs-breakpoint-desktop: 1024px;
+  --sfs-breakpoint-wide: 1280px;
+  --sfs-breakpoint-ultrawide: 1536px;
+}
+
+/* ===== Base Styles ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--sfs-font-primary);
+  font-size: var(--sfs-text-base);
+  line-height: var(--sfs-leading-normal);
+  color: var(--sfs-text);
+  background-color: var(--sfs-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Utility Classes ===== */
+
+/* Glass Card */
+.sfs-glass-card {
+  background: var(--sfs-glass-bg);
+  backdrop-filter: blur(var(--sfs-glass-blur));
+  -webkit-backdrop-filter: blur(var(--sfs-glass-blur));
+  border: 1px solid var(--sfs-glass-border);
+  border-radius: var(--sfs-radius-lg);
+  box-shadow: var(--sfs-glass-shadow);
+  padding: var(--sfs-card-padding);
+  transition: all var(--sfs-transition-normal) var(--sfs-curve-smooth);
+}
+
+.sfs-glass-card:hover {
+  background: var(--sfs-glass-bg-hover);
+  box-shadow: var(--sfs-glass-shadow-hover);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.sfs-glass-card:active {
+  background: var(--sfs-glass-bg-active);
+}
+
+/* Glass Panel */
+.sfs-glass-panel {
+  background: var(--sfs-panel-bg);
+  backdrop-filter: blur(var(--sfs-panel-blur));
+  -webkit-backdrop-filter: blur(var(--sfs-panel-blur));
+  border: 1px solid var(--sfs-panel-border);
+  border-radius: var(--sfs-radius-xl);
+  box-shadow: var(--sfs-shadow-lg);
+  padding: var(--sfs-space-xl);
+}
+
+/* Flow Dashboard Card (Crickit-inspired) */
+.sfs-flow-card {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(230, 194, 0, 0.05) 100%);
+  backdrop-filter: blur(var(--sfs-glass-blur));
+  -webkit-backdrop-filter: blur(var(--sfs-glass-blur));
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: var(--sfs-radius-flow);
+  box-shadow: var(--sfs-shadow-gold);
+  padding: var(--sfs-card-padding);
+  transition: all var(--sfs-transition-normal) var(--sfs-curve-flow);
+}
+
+.sfs-flow-card:hover {
+  box-shadow: var(--sfs-shadow-gold-strong);
+  transform: translateY(-2px);
+}
+
+/* Gold Accent Border */
+.sfs-gold-accent {
+  border-left: 3px solid var(--sfs-gold);
+  box-shadow: -2px 0 8px rgba(255, 215, 0, 0.3);
+}
+
+/* Active Indicator */
+.sfs-active-indicator {
+  background: var(--sfs-gold);
+  box-shadow: var(--sfs-shadow-gold-strong);
+  border-radius: var(--sfs-radius-round);
+}
+
+/* Button - Primary */
+.sfs-btn-primary {
+  background: var(--sfs-gold);
+  color: var(--sfs-black);
+  border: none;
+  border-radius: var(--sfs-radius-md);
+  padding: var(--sfs-space-sm) var(--sfs-space-lg);
+  font-weight: var(--sfs-weight-semibold);
+  cursor: pointer;
+  transition: all var(--sfs-transition-fast) var(--sfs-curve-smooth);
+  box-shadow: var(--sfs-shadow-md);
+}
+
+.sfs-btn-primary:hover {
+  background: var(--sfs-gold-hover);
+  box-shadow: var(--sfs-shadow-gold);
+  transform: translateY(-1px);
+}
+
+.sfs-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--sfs-shadow-sm);
+}
+
+/* Button - Ghost */
+.sfs-btn-ghost {
+  background: transparent;
+  color: var(--sfs-gold);
+  border: 1px solid var(--sfs-gold);
+  border-radius: var(--sfs-radius-md);
+  padding: var(--sfs-space-sm) var(--sfs-space-lg);
+  font-weight: var(--sfs-weight-medium);
+  cursor: pointer;
+  transition: all var(--sfs-transition-fast) var(--sfs-curve-smooth);
+}
+
+.sfs-btn-ghost:hover {
+  background: rgba(255, 215, 0, 0.1);
+  box-shadow: var(--sfs-shadow-gold);
+}
+
+/* Flow Line (for connecting elements) */
+.sfs-flow-line {
+  stroke: var(--sfs-gold);
+  stroke-width: 2px;
+  fill: none;
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+}
+
+/* Dashboard Grid */
+.sfs-dashboard-grid {
+  display: grid;
+  gap: var(--sfs-grid-gap);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  max-width: var(--sfs-content-max-width);
+  margin: 0 auto;
+  padding: var(--sfs-space-lg);
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+  :root {
+    --sfs-card-padding: 16px;
+    --sfs-grid-gap: 16px;
+  }
+
+  .sfs-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sfs-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sfs-brown);
+  border-radius: var(--sfs-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sfs-gold);
+}
+
+/* Selection */
+::selection {
+  background: var(--sfs-gold);
+  color: var(--sfs-black);
+}
+
+::-moz-selection {
+  background: var(--sfs-gold);
+  color: var(--sfs-black);
+}
