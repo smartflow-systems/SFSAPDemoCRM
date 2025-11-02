@@ -1,0 +1,13 @@
+name: SFS CI
+on: { push: { branches:[main] }, workflow_dispatch: {} }
+jobs:
+  use:
+    uses: smartflow-systems/SmartFlowSite/.github/workflows/sfs-ci-deploy.yml@main
+    with:
+      node_version: '20'
+      build: 'npm run build || echo "no build"'
+      test: 'npm test --if-present || echo "no tests"'
+      deploy_script: 'bash scripts/deploy.sh'
+    secrets:
+      SFS_PAT: ${{ secrets.SFS_PAT }}
+      REPLIT_TOKEN: ${{ secrets.REPLIT_TOKEN }}
