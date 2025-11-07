@@ -9,6 +9,11 @@
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
+    ,"sync": "bash scripts/auto-sync.sh",
+    "pull": "git pull --no-edit",
+    "push": "git push",
+    "auto-commit": "git add . && git commit -m 'chore: auto-commit [Auto-Sync]' || true",
+    "sync-all": "npm run auto-commit && npm run sync"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
