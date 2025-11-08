@@ -1,3 +1,14 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+jobs:
+  sfs:
+    uses: smartflow-systems/SmartFlowSite/.github/workflows/sfs-ci-deploy.yml@main
+    secrets: inherit
+    permissions:
+      contents: read
 name: CI (Reusable SFS)
 on:
   push:

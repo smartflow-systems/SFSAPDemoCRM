@@ -1,0 +1,11 @@
+﻿name: SFS CI Deploy
+permissions:
+  contents: read
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  call-sfs:
+    uses: smartflow-systems/SmartFlowSite/.github/workflows/sfs-ci-deploy.yml@main
+    secrets: inherit
