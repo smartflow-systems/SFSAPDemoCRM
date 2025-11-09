@@ -13,6 +13,8 @@ import Tasks from "./pages/Tasks";
 import Reports from "./pages/Reports";
 import Contacts from "./pages/Contacts";
 import Accounts from "./pages/Accounts";
+import Users from "./pages/Users";
+import Settings from "./pages/Settings";
 import Login from "./pages/Login";
 import NotFound from "./pages/not-found";
 
@@ -29,6 +31,8 @@ function Router() {
       <Route path="/accounts" component={Accounts} />
       <Route path="/tasks" component={Tasks} />
       <Route path="/reports" component={Reports} />
+      <Route path="/users" component={Users} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );

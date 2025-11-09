@@ -15,8 +15,10 @@ export default function Navigation() {
     { href: "/leads", label: "Leads", id: "leads" },
     { href: "/contacts", label: "Contacts", id: "contacts" },
     { href: "/accounts", label: "Accounts", id: "accounts" },
-    { href: "/tasks", label: "My Tasks", id: "tasks" },
+    { href: "/tasks", label: "Tasks", id: "tasks" },
     { href: "/reports", label: "Reports", id: "reports" },
+    { href: "/users", label: "Users", id: "users" },
+    { href: "/settings", label: "Settings", id: "settings" },
   ];
 
   const isActive = (href: string) => {
