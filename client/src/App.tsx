@@ -10,6 +10,9 @@ import Pipeline from "./pages/Pipeline";
 import Leads from "./pages/Leads";
 import LeadDetail from "./pages/LeadDetail";
 import Tasks from "./pages/Tasks";
+import Reports from "./pages/Reports";
+import Contacts from "./pages/Contacts";
+import Accounts from "./pages/Accounts";
 import Login from "./pages/Login";
 import NotFound from "./pages/not-found";
 
@@ -22,7 +25,10 @@ function Router() {
       <Route path="/pipeline" component={Pipeline} />
       <Route path="/leads" component={Leads} />
       <Route path="/leads/:id" component={LeadDetail} />
+      <Route path="/contacts" component={Contacts} />
+      <Route path="/accounts" component={Accounts} />
       <Route path="/tasks" component={Tasks} />
+      <Route path="/reports" component={Reports} />
       <Route component={NotFound} />
     </Switch>
   );
