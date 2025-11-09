@@ -5,6 +5,14 @@ import { storage } from "./storage";
 import { NotificationService, createNotification } from "./websocket";
 import { initializeAutomation, getAutomationService } from "./automation";
 import {
+  leadsToCSV,
+  contactsToCSV,
+  opportunitiesToCSV,
+  csvToArray,
+  validateLeadCSV,
+  generateCSVFilename
+} from "./csv-utils";
+import {
   insertUserSchema, insertAccountSchema, insertContactSchema,
   insertLeadSchema, insertOpportunitySchema, insertActivitySchema
 } from "@shared/schema";
@@ -490,6 +498,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Demo data initialized", userId: demoUser.id });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ================== CSV Export/Import Endpoints ==================
+
+  // Export leads to CSV
+  app.get("/api/export/leads/csv", async (req, res) => {
+    try {
+      const leads = await storage.getLeads();
+      const csv = leadsToCSV(leads);
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${generateCSVFilename('leads')}"`);
+      res.send(csv);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Import leads from CSV
+  app.post("/api/import/leads/csv", async (req, res) => {
+    try {
+      const { csvData } = req.body;
+      if (!csvData) {
+        return res.status(400).json({ message: "CSV data is required" });
+      }
+
+      const rows = csvToArray(csvData);
+      const validation = validateLeadCSV(rows);
+
+      if (!validation.valid) {
+        return res.status(400).json({
+          message: "CSV validation failed",
+          errors: validation.errors
+        });
+      }
+
+      const created = [];
+      const errors = [];
+
+      for (const row of rows) {
+        try {
+          const leadData = insertLeadSchema.parse({
+            name: row.name,
+            company: row.company || undefined,
+            email: row.email || undefined,
+            phone: row.phone || undefined,
+            source: row.source || undefined,
+            status: row.status || 'New',
+            rating: row.rating || undefined,
+            value: row.value ? parseFloat(row.value) : undefined,
+            description: row.description || undefined,
+            ownerId: row.ownerId || 'demo-user-gareth'
+          });
+
+          const lead = await storage.createLead(leadData);
+          created.push(lead);
+        } catch (error: any) {
+          errors.push({ row, error: error.message });
+        }
+      }
+
+      res.json({
+        message: `Imported ${created.length} leads`,
+        created: created.length,
+        errors: errors.length,
+        errorDetails: errors
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Export contacts to CSV
+  app.get("/api/export/contacts/csv", async (req, res) => {
+    try {
+      const contacts = await storage.getContacts();
+      const csv = contactsToCSV(contacts);
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${generateCSVFilename('contacts')}"`);
+      res.send(csv);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Export opportunities to CSV
+  app.get("/api/export/opportunities/csv", async (req, res) => {
+    try {
+      const opportunities = await storage.getOpportunities();
+      const csv = opportunitiesToCSV(opportunities);
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${generateCSVFilename('opportunities')}"`);
+      res.send(csv);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Bulk delete leads
+  app.post("/api/leads/bulk-delete", async (req, res) => {
+    try {
+      const { ids } = req.body;
+      if (!Array.isArray(ids)) {
+        return res.status(400).json({ message: "ids must be an array" });
+      }
+
+      const deleted = [];
+      const errors = [];
+
+      for (const id of ids) {
+        try {
+          const success = await storage.deleteLead(id);
+          if (success) {
+            deleted.push(id);
+          } else {
+            errors.push({ id, error: "Lead not found" });
+          }
+        } catch (error: any) {
+          errors.push({ id, error: error.message });
+        }
+      }
+
+      res.json({
+        message: `Deleted ${deleted.length} leads`,
+        deleted: deleted.length,
+        errors: errors.length,
+        errorDetails: errors
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
     }
   });
 

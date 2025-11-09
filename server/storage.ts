@@ -1,4 +1,4 @@
-import { 
+import {
   type User, type InsertUser,
   type Account, type InsertAccount,
   type Contact, type InsertContact,
@@ -7,20 +7,21 @@ import {
   type Activity, type InsertActivity
 } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { PostgresStorage } from "./db-storage";
 
 export interface IStorage {
   // Users
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Accounts
   getAccounts(): Promise<Account[]>;
   getAccount(id: string): Promise<Account | undefined>;
   createAccount(account: InsertAccount): Promise<Account>;
   updateAccount(id: string, account: Partial<InsertAccount>): Promise<Account | undefined>;
   deleteAccount(id: string): Promise<boolean>;
-  
+
   // Contacts
   getContacts(): Promise<Contact[]>;
   getContactsByAccount(accountId: string): Promise<Contact[]>;
@@ -28,21 +29,21 @@ export interface IStorage {
   createContact(contact: InsertContact): Promise<Contact>;
   updateContact(id: string, contact: Partial<InsertContact>): Promise<Contact | undefined>;
   deleteContact(id: string): Promise<boolean>;
-  
+
   // Leads
   getLeads(): Promise<Lead[]>;
   getLead(id: string): Promise<Lead | undefined>;
   createLead(lead: InsertLead): Promise<Lead>;
   updateLead(id: string, lead: Partial<InsertLead>): Promise<Lead | undefined>;
   deleteLead(id: string): Promise<boolean>;
-  
+
   // Opportunities
   getOpportunities(): Promise<Opportunity[]>;
   getOpportunity(id: string): Promise<Opportunity | undefined>;
   createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity>;
   updateOpportunity(id: string, opportunity: Partial<InsertOpportunity>): Promise<Opportunity | undefined>;
   deleteOpportunity(id: string): Promise<boolean>;
-  
+
   // Activities
   getActivities(): Promise<Activity[]>;
   getActivitiesByLead(leadId: string): Promise<Activity[]>;
@@ -273,4 +274,17 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Initialize storage based on environment
+function initializeStorage(): IStorage {
+  const databaseUrl = process.env.DATABASE_URL;
+
+  if (databaseUrl) {
+    console.log('✓ Using PostgreSQL database storage');
+    return new PostgresStorage(databaseUrl);
+  } else {
+    console.log('⚠ Using in-memory storage (data will be lost on restart)');
+    return new MemStorage();
+  }
+}
+
+export const storage = initializeStorage();
