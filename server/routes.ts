@@ -18,6 +18,8 @@ import {
 } from "@shared/schema";
 import { tenantMiddleware } from "./tenant-middleware";
 import { setupTenantRoutes } from "./tenant-routes";
+import { setupBillingRoutes } from "./billing-routes";
+import { setupIntegrationRoutes } from "./integration-routes";
 
 // Global service instances
 let notificationService: NotificationService | null = null;
@@ -30,6 +32,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup tenant-specific routes (registration, MFA, audit logs, etc.)
   setupTenantRoutes(app);
+
+  // Setup billing and subscription routes
+  setupBillingRoutes(app);
+
+  // Setup integration routes (custom fields, workflows, webhooks, Twilio, etc.)
+  setupIntegrationRoutes(app);
 
   // User routes
   app.get("/api/users", async (req, res) => {
