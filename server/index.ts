@@ -5,6 +5,9 @@ import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
 
+// Trust proxy - required when behind Replit's infrastructure
+app.set('trust proxy', 1);
+
 // Security headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');

@@ -4,6 +4,7 @@ import { WebSocketServer } from "ws";
 import { storage } from "./storage";
 import { NotificationService, createNotification } from "./websocket";
 import { initializeAutomation, getAutomationService } from "./automation";
+import { seedDemoData } from "./seedDemoData";
 import {
   insertUserSchema, insertAccountSchema, insertContactSchema,
   insertLeadSchema, insertOpportunitySchema, insertActivitySchema
@@ -478,17 +479,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Demo data initialization
   app.post("/api/init-demo", async (req, res) => {
     try {
-      // Create demo user
-      const demoUser = await storage.createUser({
-        username: "gareth",
-        password: "demo123",
-        email: "gareth.bowers@smartflowsystems.com",
-        fullName: "Gareth Bowers",
-        role: "Admin"
-      });
+      // Create demo user if doesn't exist
+      let demoUser = await storage.getUserByUsername("gareth");
+      if (!demoUser) {
+        demoUser = await storage.createUser({
+          username: "gareth",
+          password: "demo123",
+          email: "gareth.bowers@smartflowsystems.com",
+          fullName: "Gareth Bowers",
+          role: "Admin"
+        });
+      }
 
-      res.json({ message: "Demo data initialized", userId: demoUser.id });
+      // Seed demo data
+      const seedResult = await seedDemoData(demoUser.id);
+
+      res.json({ 
+        message: "Demo data initialized", 
+        userId: demoUser.id,
+        stats: seedResult
+      });
     } catch (error: any) {
+      console.error("Failed to initialize demo data:", error);
       res.status(500).json({ message: error.message });
     }
   });
