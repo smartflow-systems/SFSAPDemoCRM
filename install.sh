@@ -1,3 +1,5 @@
+
+#!/bin/bash
 set -euo pipefail
 
 echo "🔧 Installing Universal SFS Git Workflow..."
@@ -106,9 +108,9 @@ echo ""
 echo "🎉 UNIVERSAL SFS WORKFLOW INSTALLED!"
 echo ""
 echo "Usage in ANY SFS repo:"
-echo "  ${GREEN}sfs${NC}              - Auto commit & push"
-echo "  ${GREEN}sfs-commit${NC}       - Same thing"
-echo "  ${GREEN}sfs-sync${NC}         - Same thing"
+echo "  sfs              - Auto commit & push"
+echo "  sfs-commit       - Same thing"
+echo "  sfs-sync         - Same thing"
 echo ""
 echo "Works in these repos:"
 echo "  • SFS-SocialPowerhouse"
@@ -118,5 +120,5 @@ echo "  • SFSAPDemoCRM"
 echo "  • DataScrapeInsights"
 echo "  • Any other SFS project"
 echo ""
-echo "Just cd into any repo and type: ${GREEN}sfs${NC}"
+echo "Just cd into any repo and type: sfs"
 echo ""
