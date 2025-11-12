@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
-import { X, Menu } from 'lucide-react';
+import { Link, useLocation } from 'wouter';
+import { X, Menu, LayoutDashboard, GitBranch, Users, Building2, ListTodo, BarChart3, UserCircle, Settings } from 'lucide-react';
+import { useCRM } from '@/contexts/CRMContext';
 
 export default function GitHubSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [location] = useLocation();
+  const { user, logout } = useCRM();
 
   // Close on ESC key
   useEffect(() => {
@@ -28,13 +32,22 @@ export default function GitHubSidebar() {
   }, [isOpen]);
 
   const menuItems = [
-    { label: 'Home', href: '#home' },
-    { label: 'Features', href: '#features' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'Documentation', href: '#docs' },
-    { label: 'Support', href: '#support' },
-    { label: 'About', href: '#about' },
+    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'Pipeline', href: '/pipeline', icon: GitBranch },
+    { label: 'Leads', href: '/leads', icon: Users },
+    { label: 'Contacts', href: '/contacts', icon: UserCircle },
+    { label: 'Accounts', href: '/accounts', icon: Building2 },
+    { label: 'Tasks', href: '/tasks', icon: ListTodo },
+    { label: 'Reports', href: '/reports', icon: BarChart3 },
+    { label: 'Settings', href: '/settings', icon: Settings },
   ];
+
+  const isActive = (href: string) => {
+    if (href === '/dashboard' && (location === '/' || location === '/dashboard')) {
+      return true;
+    }
+    return location === href;
+  };
 
   return (
     <>
@@ -79,27 +92,42 @@ export default function GitHubSidebar() {
 
         {/* Menu Items */}
         <ul className="flex-grow py-5">
-          {menuItems.map((item) => (
-            <li key={item.label}>
-              <a
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className="block py-4 px-5 text-[#F5F5DC] hover:bg-[#3B2F2F] hover:pl-7 border-l-[3px] border-transparent hover:border-[#FFD700] transition-all duration-200"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <li key={item.label}>
+                <Link
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`flex items-center gap-3 py-4 px-5 border-l-[3px] transition-all duration-200 ${
+                    isActive(item.href)
+                      ? 'bg-[#3B2F2F] border-[#FFD700] text-[#FFD700] pl-7'
+                      : 'border-transparent text-[#F5F5DC] hover:bg-[#3B2F2F] hover:pl-7 hover:border-[#FFD700]'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
-        {/* Footer CTA */}
+        {/* Footer - User Info & Logout */}
         <div className="p-5 border-t border-[#3B2F2F]">
-          <a
-            href="#contact"
+          <div className="mb-3">
+            <p className="text-[#FFD700] text-sm font-semibold">{user?.fullName}</p>
+            <p className="text-[#F5F5DC]/70 text-xs">{user?.email}</p>
+          </div>
+          <button
+            onClick={() => {
+              setIsOpen(false);
+              logout();
+            }}
             className="block w-full py-3 px-4 bg-[#FFD700] text-[#0D0D0D] text-center font-semibold rounded hover:bg-[#E6C200] transition-colors"
           >
-            Get Started
-          </a>
+            Sign Out
+          </button>
         </div>
       </nav>
     </>
