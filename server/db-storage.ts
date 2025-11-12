@@ -15,7 +15,11 @@ import type {
   Contact, InsertContact,
   Lead, InsertLead,
   Opportunity, InsertOpportunity,
-  Activity, InsertActivity
+  Activity, InsertActivity,
+  Tenant, InsertTenant,
+  AuditLog, InsertAuditLog,
+  PasswordResetToken, InsertPasswordResetToken,
+  MfaSecret, InsertMfaSecret
 } from '@shared/schema';
 
 // Configure WebSocket for serverless environments
@@ -251,5 +255,185 @@ export class PostgresStorage implements IStorage {
     const result = await this.db.delete(schema.activities)
       .where(eq(schema.activities.id, id));
     return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Tenants
+  async getTenant(id: string): Promise<Tenant | undefined> {
+    return await this.db.query.tenants.findFirst({
+      where: eq(schema.tenants.id, id)
+    });
+  }
+
+  async getTenantBySubdomain(subdomain: string): Promise<Tenant | undefined> {
+    return await this.db.query.tenants.findFirst({
+      where: eq(schema.tenants.subdomain, subdomain)
+    });
+  }
+
+  async createTenant(insertTenant: InsertTenant): Promise<Tenant> {
+    const [tenant] = await this.db.insert(schema.tenants)
+      .values(insertTenant)
+      .returning();
+    return tenant;
+  }
+
+  async updateTenant(id: string, tenantUpdate: Partial<InsertTenant>): Promise<Tenant | undefined> {
+    const [updated] = await this.db.update(schema.tenants)
+      .set({ ...tenantUpdate, updatedAt: new Date() })
+      .where(eq(schema.tenants.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getTenantUserCount(tenantId: string): Promise<number> {
+    const result = await this.db
+      .select({ count: schema.users.id })
+      .from(schema.users)
+      .where(eq(schema.users.tenantId, tenantId));
+    return result.length;
+  }
+
+  async countLeadsByTenant(tenantId: string): Promise<number> {
+    const result = await this.db
+      .select({ count: schema.leads.id })
+      .from(schema.leads)
+      .where(eq(schema.leads.tenantId, tenantId));
+    return result.length;
+  }
+
+  async countOpportunitiesByTenant(tenantId: string): Promise<number> {
+    const result = await this.db
+      .select({ count: schema.opportunities.id })
+      .from(schema.opportunities)
+      .where(eq(schema.opportunities.tenantId, tenantId));
+    return result.length;
+  }
+
+  async countAccountsByTenant(tenantId: string): Promise<number> {
+    const result = await this.db
+      .select({ count: schema.accounts.id })
+      .from(schema.accounts)
+      .where(eq(schema.accounts.tenantId, tenantId));
+    return result.length;
+  }
+
+  // User extensions
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return await this.db.query.users.findFirst({
+      where: eq(schema.users.email, email)
+    });
+  }
+
+  async updateUserPassword(userId: string, hashedPassword: string): Promise<void> {
+    await this.db.update(schema.users)
+      .set({ password: hashedPassword, updatedAt: new Date() })
+      .where(eq(schema.users.id, userId));
+  }
+
+  async updateUserMfaStatus(userId: string, enabled: boolean): Promise<void> {
+    await this.db.update(schema.users)
+      .set({ mfaEnabled: enabled, updatedAt: new Date() })
+      .where(eq(schema.users.id, userId));
+  }
+
+  async updateUserLastLogin(userId: string): Promise<void> {
+    await this.db.update(schema.users)
+      .set({ lastLoginAt: new Date(), updatedAt: new Date() })
+      .where(eq(schema.users.id, userId));
+  }
+
+  // Audit Logs
+  async createAuditLog(insertAuditLog: InsertAuditLog): Promise<AuditLog> {
+    const [auditLog] = await this.db.insert(schema.auditLogs)
+      .values(insertAuditLog)
+      .returning();
+    return auditLog;
+  }
+
+  async getAuditLogs(tenantId: string, options: {
+    userId?: string;
+    action?: string;
+    entityType?: string;
+    entityId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+    offset?: number;
+  } = {}): Promise<AuditLog[]> {
+    const conditions = [eq(schema.auditLogs.tenantId, tenantId)];
+
+    if (options.userId) {
+      conditions.push(eq(schema.auditLogs.userId, options.userId));
+    }
+    if (options.action) {
+      conditions.push(eq(schema.auditLogs.action, options.action));
+    }
+    if (options.entityType) {
+      conditions.push(eq(schema.auditLogs.entityType, options.entityType));
+    }
+    if (options.entityId) {
+      conditions.push(eq(schema.auditLogs.entityId, options.entityId));
+    }
+
+    let query = this.db.query.auditLogs.findMany({
+      where: and(...conditions),
+      orderBy: [desc(schema.auditLogs.createdAt)],
+      limit: options.limit || 100,
+      offset: options.offset || 0
+    });
+
+    return await query;
+  }
+
+  // Password Reset Tokens
+  async createPasswordResetToken(insertToken: InsertPasswordResetToken): Promise<PasswordResetToken> {
+    const [token] = await this.db.insert(schema.passwordResetTokens)
+      .values(insertToken)
+      .returning();
+    return token;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    return await this.db.query.passwordResetTokens.findFirst({
+      where: eq(schema.passwordResetTokens.token, token)
+    });
+  }
+
+  async markPasswordResetTokenUsed(token: string): Promise<void> {
+    await this.db.update(schema.passwordResetTokens)
+      .set({ used: true })
+      .where(eq(schema.passwordResetTokens.token, token));
+  }
+
+  async deleteExpiredPasswordResetTokens(): Promise<number> {
+    const now = new Date();
+    const result = await this.db.delete(schema.passwordResetTokens)
+      .where(eq(schema.passwordResetTokens.expiresAt, now));
+    return result.rowCount || 0;
+  }
+
+  // MFA Secrets
+  async createMfaSecret(insertSecret: InsertMfaSecret): Promise<MfaSecret> {
+    const [secret] = await this.db.insert(schema.mfaSecrets)
+      .values(insertSecret)
+      .returning();
+    return secret;
+  }
+
+  async getMfaSecret(userId: string): Promise<MfaSecret | undefined> {
+    return await this.db.query.mfaSecrets.findFirst({
+      where: eq(schema.mfaSecrets.userId, userId)
+    });
+  }
+
+  async updateMfaBackupCodes(userId: string, codes: string[]): Promise<void> {
+    await this.db.update(schema.mfaSecrets)
+      .set({ backupCodes: codes })
+      .where(eq(schema.mfaSecrets.userId, userId));
+  }
+
+  async deleteMfaSecret(userId: string): Promise<void> {
+    await this.db.delete(schema.mfaSecrets)
+      .where(eq(schema.mfaSecrets.userId, userId));
   }
 }

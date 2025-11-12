@@ -4,16 +4,34 @@ import {
   type Contact, type InsertContact,
   type Lead, type InsertLead,
   type Opportunity, type InsertOpportunity,
-  type Activity, type InsertActivity
+  type Activity, type InsertActivity,
+  type Tenant, type InsertTenant,
+  type AuditLog, type InsertAuditLog,
+  type PasswordResetToken, type InsertPasswordResetToken,
+  type MfaSecret, type InsertMfaSecret
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { PostgresStorage } from "./db-storage";
 
 export interface IStorage {
+  // Tenants
+  getTenant(id: string): Promise<Tenant | undefined>;
+  getTenantBySubdomain(subdomain: string): Promise<Tenant | undefined>;
+  createTenant(tenant: InsertTenant): Promise<Tenant>;
+  updateTenant(id: string, tenant: Partial<InsertTenant>): Promise<Tenant | undefined>;
+  getTenantUserCount(tenantId: string): Promise<number>;
+  countLeadsByTenant(tenantId: string): Promise<number>;
+  countOpportunitiesByTenant(tenantId: string): Promise<number>;
+  countAccountsByTenant(tenantId: string): Promise<number>;
+
   // Users
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserPassword(userId: string, hashedPassword: string): Promise<void>;
+  updateUserMfaStatus(userId: string, enabled: boolean): Promise<void>;
+  updateUserLastLogin(userId: string): Promise<void>;
 
   // Accounts
   getAccounts(): Promise<Account[]>;
@@ -53,6 +71,31 @@ export interface IStorage {
   createActivity(activity: InsertActivity): Promise<Activity>;
   updateActivity(id: string, activity: Partial<InsertActivity>): Promise<Activity | undefined>;
   deleteActivity(id: string): Promise<boolean>;
+
+  // Audit Logs
+  createAuditLog(auditLog: InsertAuditLog): Promise<AuditLog>;
+  getAuditLogs(tenantId: string, options?: {
+    userId?: string;
+    action?: string;
+    entityType?: string;
+    entityId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    limit?: number;
+    offset?: number;
+  }): Promise<AuditLog[]>;
+
+  // Password Reset Tokens
+  createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenUsed(token: string): Promise<void>;
+  deleteExpiredPasswordResetTokens(): Promise<number>;
+
+  // MFA Secrets
+  createMfaSecret(secret: InsertMfaSecret): Promise<MfaSecret>;
+  getMfaSecret(userId: string): Promise<MfaSecret | undefined>;
+  updateMfaBackupCodes(userId: string, codes: string[]): Promise<void>;
+  deleteMfaSecret(userId: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {

@@ -16,12 +16,21 @@ import {
   insertUserSchema, insertAccountSchema, insertContactSchema,
   insertLeadSchema, insertOpportunitySchema, insertActivitySchema
 } from "@shared/schema";
+import { tenantMiddleware } from "./tenant-middleware";
+import { setupTenantRoutes } from "./tenant-routes";
 
 // Global service instances
 let notificationService: NotificationService | null = null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  
+
+  // Apply tenant middleware to all routes
+  app.use(tenantMiddleware(storage));
+  console.log('✓ Tenant middleware initialized');
+
+  // Setup tenant-specific routes (registration, MFA, audit logs, etc.)
+  setupTenantRoutes(app);
+
   // User routes
   app.get("/api/users", async (req, res) => {
     // Only for admin purposes - not exposing in UI
