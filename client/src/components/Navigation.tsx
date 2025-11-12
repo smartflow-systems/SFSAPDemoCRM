@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useCRM } from "@/contexts/CRMContext";
+import HamburgerMenu from "./HamburgerMenu";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -27,13 +28,18 @@ export default function Navigation() {
     <nav className="panel-dark border-b border-gold-800/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <div className="text-gold-shine text-xl font-extrabold">Smart Flow Systems</div>
-            <span className="text-gold-300 text-sm ml-2">CRM</span>
+          {/* Hamburger Menu */}
+          <div className="flex items-center space-x-3">
+            <HamburgerMenu />
+
+            {/* Logo */}
+            <div className="flex items-center">
+              <div className="text-gold-shine text-xl font-extrabold">Smart Flow Systems</div>
+              <span className="text-gold-300 text-sm ml-2">CRM</span>
+            </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Desktop */}
           <div className="hidden md:block">
             <div className="flex items-baseline space-x-4">
               {navLinks.map((link) => (
@@ -52,10 +58,10 @@ export default function Navigation() {
             </div>
           </div>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-3">
+          {/* User Menu - Desktop */}
+          <div className="hidden md:flex items-center space-x-3">
             <span className="text-gold-300 text-sm">{user?.fullName}</span>
-            <button 
+            <button
               onClick={logout}
               className="btn-gold-ghost text-sm"
             >
