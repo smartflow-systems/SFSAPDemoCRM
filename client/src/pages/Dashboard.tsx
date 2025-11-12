@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
 import Page from '@/components/layout/Page';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useCRM } from '@/contexts/CRMContext';
+import { useLeads, useOpportunities, useActivities } from '@/contexts/CRMContext';
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Users, Target, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function Dashboard() {
-  const { useLeads, useOpportunities, useActivities } = useCRM();
   const { data: leads = [] } = useLeads();
   const { data: opportunities = [] } = useOpportunities();
   const { data: activities = [] } = useActivities();
