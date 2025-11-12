@@ -24,6 +24,9 @@ import { setupIntegrationRoutes } from "./integration-routes";
 // Global service instances
 let notificationService: NotificationService | null = null;
 
+// Global service instances
+let notificationService: NotificationService | null = null;
+
 export async function registerRoutes(app: Express): Promise<Server> {
 
   // Apply tenant middleware to all routes

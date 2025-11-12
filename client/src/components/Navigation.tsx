@@ -19,6 +19,8 @@ export default function Navigation() {
     { href: "/reports", label: "Reports", id: "reports" },
     { href: "/users", label: "Users", id: "users" },
     { href: "/settings", label: "Settings", id: "settings" },
+    { href: "/tasks", label: "My Tasks", id: "tasks" },
+    { href: "/reports", label: "Reports", id: "reports" },
   ];
 
   const isActive = (href: string) => {
