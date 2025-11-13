@@ -1,4 +1,6 @@
 name: pip-audit
+permissions:
+  contents: read
 on:
   pull_request:
     paths:

@@ -14,7 +14,10 @@ export default function Navigation() {
     { href: "/dashboard", label: "Dashboard", id: "dashboard" },
     { href: "/pipeline", label: "Pipeline", id: "pipeline" },
     { href: "/leads", label: "Leads", id: "leads" },
+    { href: "/contacts", label: "Contacts", id: "contacts" },
+    { href: "/accounts", label: "Accounts", id: "accounts" },
     { href: "/tasks", label: "My Tasks", id: "tasks" },
+    { href: "/reports", label: "Reports", id: "reports" },
   ];
 
   const isActive = (href: string) => {

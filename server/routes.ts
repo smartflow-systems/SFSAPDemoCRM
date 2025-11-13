@@ -1,10 +1,16 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer } from "ws";
 import { storage } from "./storage";
-import { 
-  insertUserSchema, insertAccountSchema, insertContactSchema, 
-  insertLeadSchema, insertOpportunitySchema, insertActivitySchema 
+import { NotificationService, createNotification } from "./websocket";
+import { initializeAutomation, getAutomationService } from "./automation";
+import {
+  insertUserSchema, insertAccountSchema, insertContactSchema,
+  insertLeadSchema, insertOpportunitySchema, insertActivitySchema
 } from "@shared/schema";
+
+// Global service instances
+let notificationService: NotificationService | null = null;
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -38,6 +44,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/accounts/:id", async (req, res) => {
+    try {
+      const accountData = insertAccountSchema.partial().parse(req.body);
+      const account = await storage.updateAccount(req.params.id, accountData);
+      if (!account) {
+        return res.status(404).json({ message: "Account not found" });
+      }
+      res.json(account);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/accounts/:id", async (req, res) => {
+    const success = await storage.deleteAccount(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+    res.status(204).send();
+  });
+
   // Contact routes
   app.get("/api/contacts", async (req, res) => {
     const contacts = await storage.getContacts();
@@ -62,10 +89,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/contacts/:id", async (req, res) => {
+    try {
+      const contactData = insertContactSchema.partial().parse(req.body);
+      const contact = await storage.updateContact(req.params.id, contactData);
+      if (!contact) {
+        return res.status(404).json({ message: "Contact not found" });
+      }
+      res.json(contact);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/contacts/:id", async (req, res) => {
+    const success = await storage.deleteContact(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+    res.status(204).send();
+  });
+
   // Lead routes
   app.get("/api/leads", async (req, res) => {
-    const leads = await storage.getLeads();
-    res.json(leads);
+    let leads = await storage.getLeads();
+
+    // Search functionality
+    const search = req.query.search as string;
+    if (search) {
+      const searchLower = search.toLowerCase();
+      leads = leads.filter(lead =>
+        lead.name.toLowerCase().includes(searchLower) ||
+        lead.company?.toLowerCase().includes(searchLower) ||
+        lead.email?.toLowerCase().includes(searchLower) ||
+        lead.phone?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Filter by status
+    const status = req.query.status as string;
+    if (status) {
+      leads = leads.filter(lead => lead.status === status);
+    }
+
+    // Filter by source
+    const source = req.query.source as string;
+    if (source) {
+      leads = leads.filter(lead => lead.source === source);
+    }
+
+    // Filter by owner
+    const ownerId = req.query.ownerId as string;
+    if (ownerId) {
+      leads = leads.filter(lead => lead.ownerId === ownerId);
+    }
+
+    // Sorting
+    const sortBy = (req.query.sortBy as string) || 'createdAt';
+    const sortOrder = (req.query.sortOrder as string) || 'desc';
+    leads.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    // Pagination (optional - if page is not provided, return all)
+    const page = req.query.page ? parseInt(req.query.page as string) : null;
+    const limit = parseInt(req.query.limit as string) || 50;
+
+    if (page) {
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedLeads = leads.slice(startIndex, endIndex);
+
+      res.json({
+        data: paginatedLeads,
+        pagination: {
+          total: leads.length,
+          page,
+          limit,
+          pages: Math.ceil(leads.length / limit)
+        }
+      });
+    } else {
+      // Return all leads (backward compatible)
+      res.json(leads);
+    }
   });
 
   app.get("/api/leads/:id", async (req, res) => {
@@ -80,6 +192,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const leadData = insertLeadSchema.parse(req.body);
       const lead = await storage.createLead(leadData);
+
+      // Send notification about new lead
+      if (notificationService && lead.ownerId) {
+        const notification = createNotification.leadCreated(
+          lead.name,
+          lead.ownerId
+        );
+        notificationService.notifyUser(lead.ownerId, notification);
+      }
+
+      // Auto-create follow-up task
+      const automation = getAutomationService();
+      if (automation && lead.ownerId) {
+        await automation.createLeadFollowUpTask(lead.id, lead.name, lead.ownerId);
+      }
+
       res.status(201).json(lead);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -93,7 +221,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!lead) {
         return res.status(404).json({ message: "Lead not found" });
       }
+
+      // Send notification about lead update
+      if (notificationService && lead.ownerId) {
+        const notification = createNotification.leadUpdated(
+          lead.name,
+          lead.ownerId
+        );
+        notificationService.notifyUser(lead.ownerId, notification);
+      }
+
       res.json(lead);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/leads/:id", async (req, res) => {
+    const success = await storage.deleteLead(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Lead not found" });
+    }
+    res.status(204).send();
+  });
+
+  // Lead conversion to opportunity
+  app.post("/api/leads/:id/convert", async (req, res) => {
+    try {
+      const lead = await storage.getLead(req.params.id);
+      if (!lead) {
+        return res.status(404).json({ message: "Lead not found" });
+      }
+
+      if (lead.status === 'Converted') {
+        return res.status(400).json({ message: "Lead is already converted" });
+      }
+
+      // Create opportunity from lead data
+      const opportunityData = insertOpportunitySchema.parse({
+        name: lead.name,
+        accountId: lead.accountId,
+        contactId: lead.contactId,
+        ownerId: lead.ownerId,
+        stage: 'Discovery',
+        value: lead.value || 0,
+        probability: 20,
+        expectedCloseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        source: lead.source,
+        description: `Converted from lead: ${lead.name}`
+      });
+
+      const opportunity = await storage.createOpportunity(opportunityData);
+
+      // Update lead status to Converted
+      await storage.updateLead(req.params.id, { status: 'Converted' });
+
+      // Send notification
+      if (notificationService && lead.ownerId) {
+        const notification = {
+          type: 'system_alert' as const,
+          title: 'Lead Converted',
+          message: `Lead "${lead.name}" has been converted to an opportunity`,
+          userId: lead.ownerId,
+          timestamp: new Date(),
+          priority: 'medium' as const
+        };
+        notificationService.notifyUser(lead.ownerId, notification);
+      }
+
+      res.status(201).json({
+        message: "Lead converted successfully",
+        opportunity,
+        lead: await storage.getLead(req.params.id)
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -101,8 +301,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Opportunity routes
   app.get("/api/opportunities", async (req, res) => {
-    const opportunities = await storage.getOpportunities();
-    res.json(opportunities);
+    let opportunities = await storage.getOpportunities();
+
+    // Search functionality
+    const search = req.query.search as string;
+    if (search) {
+      const searchLower = search.toLowerCase();
+      opportunities = opportunities.filter(opp =>
+        opp.name.toLowerCase().includes(searchLower) ||
+        opp.description?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Filter by stage
+    const stage = req.query.stage as string;
+    if (stage) {
+      opportunities = opportunities.filter(opp => opp.stage === stage);
+    }
+
+    // Filter by owner
+    const ownerId = req.query.ownerId as string;
+    if (ownerId) {
+      opportunities = opportunities.filter(opp => opp.ownerId === ownerId);
+    }
+
+    // Filter by value range
+    const minValue = req.query.minValue ? parseFloat(req.query.minValue as string) : null;
+    const maxValue = req.query.maxValue ? parseFloat(req.query.maxValue as string) : null;
+    if (minValue !== null) {
+      opportunities = opportunities.filter(opp => opp.value >= minValue);
+    }
+    if (maxValue !== null) {
+      opportunities = opportunities.filter(opp => opp.value <= maxValue);
+    }
+
+    // Sorting
+    const sortBy = (req.query.sortBy as string) || 'createdAt';
+    const sortOrder = (req.query.sortOrder as string) || 'desc';
+    opportunities.sort((a, b) => {
+      const aValue = (a as any)[sortBy];
+      const bValue = (b as any)[sortBy];
+
+      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    // Pagination (optional)
+    const page = req.query.page ? parseInt(req.query.page as string) : null;
+    const limit = parseInt(req.query.limit as string) || 50;
+
+    if (page) {
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedOpportunities = opportunities.slice(startIndex, endIndex);
+
+      res.json({
+        data: paginatedOpportunities,
+        pagination: {
+          total: opportunities.length,
+          page,
+          limit,
+          pages: Math.ceil(opportunities.length / limit)
+        }
+      });
+    } else {
+      res.json(opportunities);
+    }
   });
 
   app.get("/api/opportunities/:id", async (req, res) => {
@@ -130,10 +395,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!opportunity) {
         return res.status(404).json({ message: "Opportunity not found" });
       }
+
+      // Send notification when opportunity is won
+      if (notificationService && opportunity.ownerId && opportunity.stage === 'Won') {
+        const notification = createNotification.opportunityWon(
+          opportunity.name,
+          opportunity.value,
+          opportunity.ownerId
+        );
+        notificationService.notifyUser(opportunity.ownerId, notification);
+      }
+
+      // Auto-create stage-based tasks
+      if (opportunityData.stage && opportunity.ownerId) {
+        const automation = getAutomationService();
+        if (automation) {
+          await automation.handleOpportunityStageChange(
+            opportunity.id,
+            opportunity.name,
+            opportunity.stage,
+            opportunity.ownerId
+          );
+        }
+      }
+
       res.json(opportunity);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
+  });
+
+  app.delete("/api/opportunities/:id", async (req, res) => {
+    const success = await storage.deleteOpportunity(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Opportunity not found" });
+    }
+    res.status(204).send();
   });
 
   // Activity routes
@@ -157,6 +454,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/activities/:id", async (req, res) => {
+    try {
+      const activityData = insertActivitySchema.partial().parse(req.body);
+      const activity = await storage.updateActivity(req.params.id, activityData);
+      if (!activity) {
+        return res.status(404).json({ message: "Activity not found" });
+      }
+      res.json(activity);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/activities/:id", async (req, res) => {
+    const success = await storage.deleteActivity(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+    res.status(204).send();
+  });
+
   // Demo data initialization
   app.post("/api/init-demo", async (req, res) => {
     try {
@@ -176,5 +494,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // Initialize WebSocket server for real-time notifications
+  const wss = new WebSocketServer({
+    server: httpServer,
+    path: '/ws'
+  });
+
+  notificationService = new NotificationService(wss);
+  console.log('✓ WebSocket notification service initialized');
+
+  // Initialize automation service
+  initializeAutomation(notificationService);
+  console.log('✓ Automation service initialized');
+
   return httpServer;
 }
