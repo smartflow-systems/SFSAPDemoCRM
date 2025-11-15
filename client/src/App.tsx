@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CRMProvider } from "./contexts/CRMContext";
 import Navigation from "./components/Navigation";
 import GlobalSearch from "./components/GlobalSearch/GlobalSearch";
+import QuickActions from "./components/QuickActions/QuickActions";
+import KeyboardShortcuts from "./components/KeyboardShortcuts/KeyboardShortcuts";
 import Dashboard from "./pages/Dashboard";
 import Pipeline from "./pages/Pipeline";
 import Leads from "./pages/Leads";
@@ -47,7 +49,10 @@ function App() {
           <div className="min-h-screen bg-brown-900">
             <Navigation />
             <Router />
+            {/* Power User Features */}
             <GlobalSearch />
+            <QuickActions />
+            <KeyboardShortcuts />
             <Toaster />
           </div>
         </CRMProvider>
