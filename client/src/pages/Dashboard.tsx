@@ -3,6 +3,10 @@ import { useLocation } from "wouter";
 import GitHubSidebar from "../components/Dashboard/GitHubSidebar";
 import Leaderboard from "../components/Gamification/Leaderboard";
 import ActivityFeed from "../components/Collaboration/ActivityFeed";
+import SalesForecast from "../components/Forecasting/SalesForecast";
+import AISalesCoach from "../components/AI/AISalesCoach";
+import AIInsightsPanel from "../components/AI/AIInsightsPanel";
+import AchievementBadges from "../components/Gamification/AchievementBadges";
 import { useCRM, useLeads, useOpportunities } from "@/contexts/CRMContext";
 import { TrendingUp, Users, Briefcase, Target, DollarSign, Zap, Sparkles } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -219,12 +223,27 @@ export default function Dashboard() {
 
               {/* Leaderboard */}
               <Leaderboard limit={5} />
+
+              {/* AI Sales Forecast */}
+              <SalesForecast />
+
+              {/* AI Insights Panel */}
+              <AIInsightsPanel maxInsights={5} />
             </div>
 
-            {/* Right Column - Activity Feed */}
-            <div className="lg:col-span-1">
+            {/* Right Column - Activity Feed & AI Coach */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* AI Sales Coach */}
+              <AISalesCoach />
+
+              {/* Activity Feed */}
               <ActivityFeed limit={15} />
             </div>
+          </div>
+
+          {/* Achievement Badges - Full Width */}
+          <div className="mt-6">
+            <AchievementBadges showUnearned={true} />
           </div>
         </div>
       </main>

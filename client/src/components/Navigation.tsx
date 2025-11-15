@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { useCRM } from "@/contexts/CRMContext";
+import NotificationCenter from "./Notifications/NotificationCenter";
 
 export default function Navigation() {
   const [location] = useLocation();
@@ -58,9 +59,12 @@ export default function Navigation() {
           </div>
 
           {/* User Menu */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-4">
+            {/* Notification Center */}
+            <NotificationCenter />
+
             <span className="text-gold-300 text-sm">{user?.fullName}</span>
-            <button 
+            <button
               onClick={logout}
               className="btn-gold-ghost text-sm"
             >
