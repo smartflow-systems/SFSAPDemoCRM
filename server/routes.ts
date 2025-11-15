@@ -20,6 +20,7 @@ import { tenantMiddleware } from "./tenant-middleware";
 import { setupTenantRoutes } from "./tenant-routes";
 import { setupBillingRoutes } from "./billing-routes";
 import { setupIntegrationRoutes } from "./integration-routes";
+import { setupAIRoutes } from "./ai-routes";
 
 // Global service instances
 let notificationService: NotificationService | null = null;
@@ -38,6 +39,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Setup integration routes (custom fields, workflows, webhooks, Twilio, etc.)
   setupIntegrationRoutes(app);
+
+  // Setup AI-powered features (lead scoring, email drafting, sentiment analysis)
+  setupAIRoutes(app);
 
   // User routes
   app.get("/api/users", async (req, res) => {

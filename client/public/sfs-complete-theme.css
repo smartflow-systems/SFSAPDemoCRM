@@ -1,0 +1,476 @@
+/**
+ * SFS Family Theme - Complete Theme System
+ * Luxurious gold on dark marble brown-tinted black
+ * Version: 1.0.0
+ */
+
+:root {
+  /* ========================================
+     PRIMARY BRAND COLORS
+     ======================================== */
+  --sf-black: #0D0D0D;
+  --sf-brown: #3B2F2F;
+  --sf-gold: #FFD700;
+  --sf-gold-hover: #E6C200;
+  --sf-beige: #F5F5DC;
+
+  /* HSL Variants for better manipulation */
+  --sf-black-hsl: 0, 0%, 5%;
+  --sf-brown-hsl: 0, 17%, 22%;
+  --sf-gold-hsl: 51, 100%, 50%;
+  --sf-beige-hsl: 60, 56%, 91%;
+
+  /* ========================================
+     SEMANTIC COLORS
+     ======================================== */
+  --sf-success: #10B981;
+  --sf-warning: #F59E0B;
+  --sf-error: #EF4444;
+  --sf-info: #3B82F6;
+
+  /* ========================================
+     TEXT COLORS
+     ======================================== */
+  --sf-text-primary: #F5F5DC;
+  --sf-text-secondary: #D4C5A0;
+  --sf-text-muted: #A89968;
+  --sf-text-gold: #FFD700;
+
+  /* ========================================
+     SPACING SYSTEM
+     ======================================== */
+  --sf-space-xs: 0.25rem;   /* 4px */
+  --sf-space-sm: 0.5rem;    /* 8px */
+  --sf-space-md: 1rem;      /* 16px */
+  --sf-space-lg: 1.5rem;    /* 24px */
+  --sf-space-xl: 2rem;      /* 32px */
+  --sf-space-2xl: 3rem;     /* 48px */
+  --sf-space-3xl: 4rem;     /* 64px */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+  --sf-radius-sm: 0.375rem;  /* 6px */
+  --sf-radius-md: 0.5rem;    /* 8px */
+  --sf-radius-lg: 0.75rem;   /* 12px */
+  --sf-radius-xl: 1rem;      /* 16px */
+  --sf-radius-2xl: 1.5rem;   /* 24px */
+  --sf-radius-full: 9999px;
+
+  /* ========================================
+     ELEVATION / SHADOWS
+     ======================================== */
+  --sf-shadow-low: 0 2px 8px rgba(255, 215, 0, 0.1);
+  --sf-shadow-medium: 0 4px 16px rgba(255, 215, 0, 0.15);
+  --sf-shadow-high: 0 8px 32px rgba(255, 215, 0, 0.2);
+  --sf-shadow-glow: 0 0 24px rgba(255, 215, 0, 0.3);
+  --sf-shadow-glow-strong: 0 0 48px rgba(255, 215, 0, 0.5);
+
+  /* ========================================
+     ANIMATION TIMING
+     ======================================== */
+  --sf-duration-fast: 150ms;
+  --sf-duration-normal: 300ms;
+  --sf-duration-slow: 500ms;
+
+  /* Cricket Flow Easing Curves */
+  --sf-ease-cricket: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --sf-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --sf-ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* ========================================
+     GLASSMORPHISM
+     ======================================== */
+  --sf-glass-blur: 12px;
+  --sf-glass-opacity: 0.1;
+  --sf-glass-border-opacity: 0.2;
+
+  /* ========================================
+     Z-INDEX LAYERS
+     ======================================== */
+  --sf-z-background: -1;
+  --sf-z-base: 0;
+  --sf-z-elevated: 10;
+  --sf-z-dropdown: 1000;
+  --sf-z-sticky: 1020;
+  --sf-z-modal-backdrop: 1030;
+  --sf-z-modal: 1040;
+  --sf-z-popover: 1050;
+  --sf-z-tooltip: 1060;
+}
+
+/* ========================================
+   GLASSMORPHISM UTILITIES
+   ======================================== */
+
+/* Base glass card with blur and gold border */
+.glass-card {
+  background: rgba(13, 13, 13, var(--sf-glass-opacity));
+  backdrop-filter: blur(var(--sf-glass-blur));
+  -webkit-backdrop-filter: blur(var(--sf-glass-blur));
+  border: 1px solid rgba(255, 215, 0, var(--sf-glass-border-opacity));
+  border-radius: var(--sf-radius-lg);
+  box-shadow: var(--sf-shadow-low);
+  transition: all var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: var(--sf-shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Glass panel with darker background */
+.glass-panel {
+  background: rgba(59, 47, 47, 0.3);
+  backdrop-filter: blur(var(--sf-glass-blur));
+  -webkit-backdrop-filter: blur(var(--sf-glass-blur));
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: var(--sf-radius-md);
+  box-shadow: var(--sf-shadow-low);
+}
+
+/* Glass overlay for modals/drawers */
+.glass-overlay {
+  background: rgba(13, 13, 13, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ========================================
+   BUTTON VARIANTS
+   ======================================== */
+
+.btn-sf-primary {
+  background: linear-gradient(135deg, var(--sf-gold) 0%, var(--sf-gold-hover) 100%);
+  color: var(--sf-black);
+  border: none;
+  padding: var(--sf-space-sm) var(--sf-space-lg);
+  border-radius: var(--sf-radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--sf-duration-normal) var(--sf-ease-cricket);
+  box-shadow: var(--sf-shadow-medium);
+}
+
+.btn-sf-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sf-shadow-glow);
+  background: linear-gradient(135deg, var(--sf-gold-hover) 0%, var(--sf-gold) 100%);
+}
+
+.btn-sf-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--sf-shadow-low);
+}
+
+.btn-sf-secondary {
+  background: transparent;
+  color: var(--sf-gold);
+  border: 2px solid var(--sf-gold);
+  padding: var(--sf-space-sm) var(--sf-space-lg);
+  border-radius: var(--sf-radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.btn-sf-secondary:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: var(--sf-gold-hover);
+  box-shadow: var(--sf-shadow-glow);
+}
+
+.btn-sf-ghost {
+  background: transparent;
+  color: var(--sf-text-primary);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  padding: var(--sf-space-sm) var(--sf-space-lg);
+  border-radius: var(--sf-radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.btn-sf-ghost:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: var(--sf-gold);
+  color: var(--sf-gold);
+}
+
+/* ========================================
+   INPUT VARIANTS
+   ======================================== */
+
+.input-sf {
+  background: rgba(13, 13, 13, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  color: var(--sf-text-primary);
+  padding: var(--sf-space-sm) var(--sf-space-md);
+  border-radius: var(--sf-radius-md);
+  font-size: 0.875rem;
+  transition: all var(--sf-duration-normal) var(--sf-ease-cricket);
+  outline: none;
+}
+
+.input-sf:focus {
+  border-color: var(--sf-gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+  background: rgba(13, 13, 13, 0.6);
+}
+
+.input-sf::placeholder {
+  color: var(--sf-text-muted);
+}
+
+/* ========================================
+   BADGE VARIANTS
+   ======================================== */
+
+.badge-sf-gold {
+  background: rgba(255, 215, 0, 0.15);
+  color: var(--sf-gold);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  padding: var(--sf-space-xs) var(--sf-space-sm);
+  border-radius: var(--sf-radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sf-space-xs);
+}
+
+.badge-sf-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--sf-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: var(--sf-space-xs) var(--sf-space-sm);
+  border-radius: var(--sf-radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-sf-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--sf-warning);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: var(--sf-space-xs) var(--sf-space-sm);
+  border-radius: var(--sf-radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-sf-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--sf-error);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: var(--sf-space-xs) var(--sf-space-sm);
+  border-radius: var(--sf-radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ========================================
+   CARD ELEVATIONS
+   ======================================== */
+
+.card-sf-low {
+  box-shadow: var(--sf-shadow-low);
+}
+
+.card-sf-medium {
+  box-shadow: var(--sf-shadow-medium);
+}
+
+.card-sf-high {
+  box-shadow: var(--sf-shadow-high);
+}
+
+.card-sf-glow {
+  box-shadow: var(--sf-shadow-glow);
+}
+
+/* ========================================
+   TEXT UTILITIES
+   ======================================== */
+
+.text-sf-primary {
+  color: var(--sf-text-primary);
+}
+
+.text-sf-secondary {
+  color: var(--sf-text-secondary);
+}
+
+.text-sf-muted {
+  color: var(--sf-text-muted);
+}
+
+.text-sf-gold {
+  color: var(--sf-gold);
+}
+
+.text-sf-gold-gradient {
+  background: linear-gradient(135deg, var(--sf-gold) 0%, var(--sf-gold-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   ANIMATION UTILITIES
+   ======================================== */
+
+.animate-sf-fade-in {
+  animation: sfFadeIn var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.animate-sf-slide-up {
+  animation: sfSlideUp var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.animate-sf-slide-down {
+  animation: sfSlideDown var(--sf-duration-normal) var(--sf-ease-cricket);
+}
+
+.animate-sf-scale-in {
+  animation: sfScaleIn var(--sf-duration-normal) var(--sf-ease-bounce);
+}
+
+.animate-sf-glow-pulse {
+  animation: sfGlowPulse 2s var(--sf-ease-smooth) infinite;
+}
+
+@keyframes sfFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sfSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sfSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sfScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes sfGlowPulse {
+  0%, 100% {
+    box-shadow: var(--sf-shadow-glow);
+  }
+  50% {
+    box-shadow: var(--sf-shadow-glow-strong);
+  }
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Mobile first approach */
+@media (min-width: 640px) {
+  :root {
+    --sf-space-base: 1.125rem;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --sf-space-base: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --sf-space-base: 1.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --sf-space-base: 1.75rem;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.sf-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--sf-space-md);
+}
+
+.sf-section {
+  padding: var(--sf-space-2xl) 0;
+}
+
+.sf-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
+  border: none;
+  margin: var(--sf-space-lg) 0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--sf-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: var(--sf-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: var(--sf-text-primary);
+}
+
+::-moz-selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: var(--sf-text-primary);
+}
