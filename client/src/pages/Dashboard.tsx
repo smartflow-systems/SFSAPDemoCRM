@@ -116,7 +116,7 @@ export default function Dashboard() {
     return data;
   }, [opportunities]);
 
-  const COLORS = ['#D4AF37', '#C5A028', '#B69121', '#A7821A', '#997313'];
+  const COLORS = ['#FFD700', '#C5A028', '#B69121', '#A7821A', '#997313'];
 
   return (
     <Page title="Dashboard">
@@ -206,18 +206,18 @@ export default function Dashboard() {
               <AreaChart data={revenueTrend}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#D4AF37" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#3e2a1f" />
                 <XAxis dataKey="month" stroke="#C5A028" />
                 <YAxis stroke="#C5A028" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #D4AF37' }}
-                  labelStyle={{ color: '#D4AF37' }}
+                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #FFD700' }}
+                  labelStyle={{ color: '#FFD700' }}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#D4AF37" fillOpacity={1} fill="url(#colorRevenue)" />
+                <Area type="monotone" dataKey="revenue" stroke="#FFD700" fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -246,8 +246,8 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #D4AF37' }}
-                  labelStyle={{ color: '#D4AF37' }}
+                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #FFD700' }}
+                  labelStyle={{ color: '#FFD700' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -269,10 +269,10 @@ export default function Dashboard() {
                 <XAxis dataKey="name" stroke="#C5A028" />
                 <YAxis stroke="#C5A028" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #D4AF37' }}
-                  labelStyle={{ color: '#D4AF37' }}
+                  contentStyle={{ backgroundColor: '#2a1810', border: '1px solid #FFD700' }}
+                  labelStyle={{ color: '#FFD700' }}
                 />
-                <Bar dataKey="value" fill="#D4AF37" />
+                <Bar dataKey="value" fill="#FFD700" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
