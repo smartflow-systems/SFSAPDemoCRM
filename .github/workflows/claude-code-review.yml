@@ -1,0 +1,72 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    name: AI Code Quality Review
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Code Action Official
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are reviewing code for SmartFlow Systems (SFS), a suite of AI-powered business automation tools.
+
+            **SFS STANDARDS TO ENFORCE:**
+
+            1. **Brand Guidelines**
+               - Colors: Black #0D0D0D, Brown #3B2F2F, Gold #FFD700
+               - Glassmorphism design patterns
+               - Consistency across all SFS apps
+
+            2. **Security Requirements**
+               - NO hardcoded secrets (use environment variables)
+               - MUST use parameterized queries for all database operations
+               - MUST sanitize user input with DOMPurify for innerHTML
+               - Validate all external inputs
+
+            3. **Code Quality**
+               - TypeScript strict mode compliance
+               - Python type hints required
+               - Self-documenting variable names
+               - Comments only for complex business logic
+
+            4. **SFS Infrastructure Standards**
+               - Health endpoint: GET /health → {"ok":true}
+               - Bash scripts MUST use: set -euo pipefail
+               - CI/CD must pass (GitHub Actions)
+               - Show file paths in brackets [path/to/file.ts]
+
+            5. **Stack Compliance**
+               - Frontend: React 18/19, TypeScript, Tailwind, Radix UI
+               - Backend: Node.js, Python FastAPI, Prisma ORM
+               - Deployment: Replit compatible
+
+            **YOUR TASK:**
+            Review the changed files and provide:
+            - Security vulnerabilities found
+            - Brand guideline violations
+            - Code quality issues
+            - Missing health endpoints or error handling
+            - Suggestions for improvement
+
+            Be specific, cite line numbers, and prioritize security issues.
