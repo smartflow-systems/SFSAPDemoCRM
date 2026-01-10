@@ -1,0 +1,564 @@
+/* ============================================================================
+   SFS COMPLETE THEME - SmartFlow Systems Design System
+   ============================================================================
+   Circuit Flow Background + Glass Cards + Premium Styling
+
+   INSTALLATION:
+   1. Link this CSS file: <link rel="stylesheet" href="sfs-complete-theme.css">
+   2. Add circuit canvas: <canvas id="circuit-canvas"></canvas>
+   3. Initialize circuit: <script src="sfs-circuit-flow.js"></script>
+
+   Version: 2.0
+   Updated: 2025-11-02
+   ============================================================================ */
+
+/* ========================================================================== */
+/* PART 1: DESIGN TOKENS & CSS VARIABLES */
+/* ========================================================================== */
+
+:root {
+  /* Core SmartFlow Colors */
+  --sf-black: #0D0D0D;
+  --sf-brown: #3B2F2F;
+  --sf-gold: #FFD700;
+  --sf-gold-bright: #ffdd00;
+  --sf-gold-2: #E6C200;
+  --sf-beige: #F5F5DC;
+  --sf-white: #FFFFFF;
+  --sf-gold-grad: linear-gradient(135deg, #FFD700, #E6C200);
+  --sf-muted: rgba(233, 230, 223, 0.8);
+
+  /* Semantic Tokens (HSL without wrapper) */
+  --background: 0 0% 5%;
+  --foreground: 48 10% 98%;
+  --card: 0 0% 8%;
+  --card-foreground: 48 10% 98%;
+  --popover: 0 0% 7%;
+  --popover-foreground: 48 10% 98%;
+  --primary: 51 100% 50%;
+  --primary-foreground: 0 0% 5%;
+  --secondary: 30 15% 18%;
+  --secondary-foreground: 48 10% 98%;
+  --muted: 30 10% 12%;
+  --muted-foreground: 45 10% 65%;
+  --accent: 51 91% 45%;
+  --accent-foreground: 0 0% 5%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 48 10% 98%;
+  --border: 45 15% 20%;
+  --card-border: 51 50% 25%;
+  --input: 45 15% 25%;
+  --ring: 51 100% 50%;
+
+  /* SmartFlow Utilities */
+  --sf-radius: 1rem;
+  --sf-blur: 12px;
+  --elevate-1: rgba(255, 215, 0, 0.06);
+  --elevate-2: rgba(255, 215, 0, 0.14);
+
+  /* Shadows */
+  --shadow-sm: 0px 2px 4px -1px rgba(0,0,0,0.35), 0px 1px 2px -1px rgba(0,0,0,0.50);
+  --shadow-md: 0px 6px 10px -2px rgba(0,0,0,0.45), 0px 2px 4px -2px rgba(0,0,0,0.35);
+  --shadow-lg: 0px 10px 15px -3px rgba(0,0,0,0.50), 0px 4px 6px -4px rgba(0,0,0,0.40);
+  --shadow-xl: 0px 20px 25px -5px rgba(0,0,0,0.55), 0px 8px 10px -6px rgba(0,0,0,0.40);
+}
+
+/* ========================================================================== */
+/* PART 2: CIRCUIT FLOW BACKGROUND CANVAS */
+/* ========================================================================== */
+
+/* Circuit background canvas - Fixed positioning with proper layering */
+#circuit-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+/* Ensure main content appears above circuit */
+#root,
+body > div:first-child,
+.app,
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================================================== */
+/* PART 3: BASE STYLES */
+/* ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--sf-black);
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ========================================================================== */
+/* PART 4: GLASS-MORPHISM CARD SYSTEM */
+/* ========================================================================== */
+
+.glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 215, 0, 0.22);
+  border-radius: var(--sf-radius);
+  padding: clamp(16px, 2vw, 32px);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  contain: layout style paint;
+  will-change: transform;
+}
+
+.glass-card:hover {
+  border-color: rgba(230, 194, 0, 0.35);
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-2px);
+}
+
+/* Alternative glass card styles */
+.sfs-glass-card {
+  background: rgba(59, 47, 47, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.sfs-flow-card {
+  background: linear-gradient(145deg, rgba(13, 13, 13, 0.8), rgba(59, 47, 47, 0.6));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 215, 0, 0.1);
+}
+
+/* Elevation System */
+.hover-elevate {
+  transition: all 0.3s ease;
+}
+
+.hover-elevate:hover {
+  background: linear-gradient(to bottom, var(--elevate-1), transparent);
+}
+
+.active-elevate-2:active {
+  background: linear-gradient(to bottom, var(--elevate-2), transparent);
+  transform: scale(0.98);
+}
+
+/* ========================================================================== */
+/* PART 5: TYPOGRAPHY */
+/* ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h4 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
+
+.text-gold-gradient {
+  background: var(--sf-gold-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+.text-gold {
+  color: var(--sf-gold);
+}
+
+/* ========================================================================== */
+/* PART 6: BUTTONS */
+/* ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-gold,
+.sfs-btn-primary {
+  background: var(--sf-gold-grad);
+  color: var(--sf-black);
+  border: 1px solid rgba(230, 194, 0, 0.6);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.btn-gold:hover,
+.sfs-btn-primary:hover {
+  background: var(--sf-gold-2);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
+}
+
+.btn-gold:active,
+.sfs-btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--sf-white);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 215, 0, 0.35);
+}
+
+/* Pulse animation for CTAs */
+.pulse-on-hover:hover {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5); }
+}
+
+/* ========================================================================== */
+/* PART 7: BADGES & LABELS */
+/* ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  color: var(--sf-gold);
+}
+
+/* ========================================================================== */
+/* PART 8: INPUT FIELDS */
+/* ========================================================================== */
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: hsl(var(--input));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+/* ========================================================================== */
+/* PART 9: ALERTS */
+/* ========================================================================== */
+
+.alert {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid;
+}
+
+.alert-success {
+  background: rgba(74, 124, 74, 0.1);
+  border-color: rgba(74, 124, 74, 0.3);
+  color: #90EE90;
+}
+
+.alert-error {
+  background: rgba(221, 60, 60, 0.1);
+  border-color: rgba(221, 60, 60, 0.3);
+  color: #FF6B6B;
+}
+
+.alert-info {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+  color: var(--sf-gold);
+}
+
+/* ========================================================================== */
+/* PART 10: LAYOUT UTILITIES */
+/* ========================================================================== */
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2rem);
+}
+
+.section {
+  padding: clamp(3rem, 8vw, 5rem) 0;
+}
+
+/* ========================================================================== */
+/* PART 11: NAVIGATION */
+/* ========================================================================== */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(13, 13, 13, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+  padding: 1rem 0;
+  isolation: isolate;
+  will-change: backdrop-filter;
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--sf-white);
+  text-decoration: none;
+}
+
+.navbar-logo {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  background: var(--sf-gold-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--sf-black);
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+
+.navbar-nav a {
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar-nav a:hover {
+  color: var(--sf-gold);
+}
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 13, 13, 0.98);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu.open {
+  transform: translateY(0);
+}
+
+/* ========================================================================== */
+/* PART 12: TABLE STYLES */
+/* ========================================================================== */
+
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--sf-radius);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: rgba(255, 215, 0, 0.08);
+}
+
+th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--sf-gold);
+  font-size: 0.875rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.08);
+  color: hsl(var(--foreground));
+}
+
+tbody tr:hover {
+  background: rgba(255, 215, 0, 0.04);
+}
+
+/* ========================================================================== */
+/* PART 13: FOOTER */
+/* ========================================================================== */
+
+footer {
+  border-top: 1px solid rgba(255, 215, 0, 0.15);
+  padding: 2rem 0;
+  margin-top: 4rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+  position: relative;
+  z-index: 10;
+}
+
+footer .text-gold {
+  color: var(--sf-gold);
+  font-weight: 600;
+}
+
+/* ========================================================================== */
+/* PART 14: ANIMATIONS */
+/* ========================================================================== */
+
+/* Fade in animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Stagger animation for cards */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* ========================================================================== */
+/* PART 15: UTILITY CLASSES */
+/* ========================================================================== */
+
+.text-center { text-align: center; }
+.mt-4 { margin-top: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.mb-8 { margin-bottom: 2rem; }
+.p-6 { padding: 1.5rem; }
+.p-8 { padding: 2rem; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+/* ========================================================================== */
+/* PART 16: RESPONSIVE DESIGN */
+/* ========================================================================== */
+
+@media (max-width: 768px) {
+  .navbar-nav {
+    gap: 1rem;
+  }
+
+  .navbar-nav a {
+    font-size: 0.75rem;
+  }
+
+  .glass-card,
+  .sfs-glass-card,
+  .sfs-flow-card {
+    padding: 1rem;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}
