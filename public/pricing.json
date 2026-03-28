@@ -1,0 +1,25 @@
+{
+  "plans": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price": 29,
+      "currency": "GBP",
+      "interval": "month"
+    },
+    {
+      "id": "pro",
+      "name": "Pro",
+      "price": 97,
+      "currency": "GBP",
+      "interval": "month"
+    },
+    {
+      "id": "premium",
+      "name": "Premium",
+      "price": 297,
+      "currency": "GBP",
+      "interval": "month"
+    }
+  ]
+}
