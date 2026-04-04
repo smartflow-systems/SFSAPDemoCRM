@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My SFS App — SmartFlow Systems</title>
+
+  <!--
+    ===================================================
+    SFS UI KIT — Drop these two lines into every repo
+    ===================================================
+  -->
+  <link rel="stylesheet" href="sfs-ui.css">
+  <!-- sfs-bg.js is loaded at bottom of body -->
+
+</head>
+<body>
+
+  <!-- ===================================================
+       NAVIGATION
+       =================================================== -->
+  <nav class="sfs-nav">
+    <a href="/" class="sfs-nav-brand">SmartFlow Systems</a>
+
+    <button class="sfs-nav-toggle" id="navToggle" aria-label="Open menu">&#9776;</button>
+
+    <div class="sfs-nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+      <a href="/pricing.html" class="sfs-btn sfs-btn-gold sfs-btn-sm">Get Started</a>
+    </div>
+  </nav>
+
+
+  <!-- ===================================================
+       HERO
+       =================================================== -->
+  <section class="sfs-hero">
+    <div class="sfs-hero-inner sfs-animate-slide-up">
+      <span class="sfs-badge sfs-badge-gold sfs-mb-4">AI-Powered Automation</span>
+      <h1 class="sfs-h1 sfs-gold-text">Your Headline Goes Here</h1>
+      <p>Supporting description that tells visitors what this system does and why they should care about it.</p>
+      <div class="sfs-hero-ctas">
+        <a href="/pricing.html" class="sfs-btn sfs-btn-primary sfs-btn-lg">Get Started</a>
+        <a href="#features"    class="sfs-btn sfs-btn-ghost sfs-btn-lg">See Features</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===================================================
+       FEATURES — Glass Card Grid
+       =================================================== -->
+  <section class="sfs-section" id="features">
+    <div class="sfs-container">
+
+      <div class="sfs-section-header">
+        <h2 class="sfs-section-title sfs-gold-text">What It Does</h2>
+        <p class="sfs-section-subtitle">Built to automate, convert, and scale.</p>
+      </div>
+
+      <div class="sfs-grid-3 sfs-stagger">
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">01</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature One</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">02</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature Two</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">03</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature Three</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">04</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature Four</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">05</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature Five</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+        <div class="sfs-card">
+          <span class="sfs-badge sfs-badge-gold sfs-mb-4">06</span>
+          <h3 class="sfs-h4 sfs-text-gold sfs-mb-4">Feature Six</h3>
+          <p class="sfs-text-muted">Short description of what this feature does and the value it delivers.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sfs-divider sfs-container"></div>
+
+  <!-- ===================================================
+       PRICING — Cards
+       =================================================== -->
+  <section class="sfs-section" id="pricing">
+    <div class="sfs-container">
+
+      <div class="sfs-section-header">
+        <h2 class="sfs-section-title sfs-gold-text">Simple, Transparent Pricing</h2>
+        <p class="sfs-section-subtitle">Start your 14-day free trial. Cancel any time.</p>
+      </div>
+
+      <div class="sfs-grid-3 sfs-stagger">
+        <!-- Starter -->
+        <div class="sfs-price-card">
+          <h3 class="sfs-h4 sfs-text-gold">Starter</h3>
+          <p class="sfs-text-muted sfs-mt-4">Perfect for getting started</p>
+          <div class="sfs-price-amount">£49<span class="sfs-price-period">/mo</span></div>
+          <ul class="sfs-plan-features">
+            <li>Feature One</li>
+            <li>Feature Two</li>
+            <li>5 Users</li>
+            <li>Email Support</li>
+          </ul>
+          <a href="/checkout.html?plan=starter" class="sfs-btn sfs-btn-ghost sfs-btn-block">Start Free Trial</a>
+        </div>
+
+        <!-- Pro — FEATURED -->
+        <div class="sfs-price-card featured">
+          <div class="sfs-badge sfs-badge-solid sfs-mb-4">MOST POPULAR</div>
+          <h3 class="sfs-h4 sfs-text-gold">Pro</h3>
+          <p class="sfs-text-muted sfs-mt-4">For growing businesses</p>
+          <div class="sfs-price-amount">£149<span class="sfs-price-period">/mo</span></div>
+          <ul class="sfs-plan-features">
+            <li>Everything in Starter</li>
+            <li>Feature Three</li>
+            <li>25 Users</li>
+            <li>Priority Support</li>
+            <li>Analytics Dashboard</li>
+          </ul>
+          <a href="/checkout.html?plan=pro" class="sfs-btn sfs-btn-primary sfs-btn-block">Start Free Trial</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="sfs-price-card">
+          <h3 class="sfs-h4 sfs-text-gold">Enterprise</h3>
+          <p class="sfs-text-muted sfs-mt-4">For established teams</p>
+          <div class="sfs-price-amount">£349<span class="sfs-price-period">/mo</span></div>
+          <ul class="sfs-plan-features">
+            <li>Everything in Pro</li>
+            <li>Unlimited Users</li>
+            <li>Custom Integrations</li>
+            <li>Dedicated Manager</li>
+            <li>SLA Guarantee</li>
+          </ul>
+          <a href="/checkout.html?plan=enterprise" class="sfs-btn sfs-btn-ghost sfs-btn-block">Start Free Trial</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sfs-divider sfs-container"></div>
+
+  <!-- ===================================================
+       TESTIMONIALS
+       =================================================== -->
+  <section class="sfs-section">
+    <div class="sfs-container">
+
+      <div class="sfs-section-header">
+        <h2 class="sfs-section-title sfs-gold-text">What Our Clients Say</h2>
+      </div>
+
+      <div class="sfs-grid-3 sfs-stagger">
+        <div class="sfs-testimonial">
+          <blockquote>This system completely transformed how we handle client bookings. We're saving 12 hours a week.</blockquote>
+          <cite>— Sarah J., Salon Owner</cite>
+        </div>
+        <div class="sfs-testimonial">
+          <blockquote>The automation alone paid for the subscription in the first month. I can't imagine running without it.</blockquote>
+          <cite>— Mark D., Gym Manager</cite>
+        </div>
+        <div class="sfs-testimonial">
+          <blockquote>Onboarding was seamless. We were live in under an hour. The support team was brilliant throughout.</blockquote>
+          <cite>— Priya T., Spa Director</cite>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="sfs-divider sfs-container"></div>
+
+  <!-- ===================================================
+       CTA SECTION
+       =================================================== -->
+  <section class="sfs-section sfs-center">
+    <div class="sfs-container">
+      <div class="sfs-card sfs-card-lg sfs-animate-scale-in sfs-cta-card">
+        <h2 class="sfs-h2 sfs-gold-text sfs-mb-4">Ready to Get Started?</h2>
+        <p class="sfs-body-lg sfs-muted sfs-mb-8">Join hundreds of businesses already using SmartFlow Systems. 14-day free trial. No credit card required.</p>
+        <a href="/pricing.html" class="sfs-btn sfs-btn-primary sfs-btn-lg">View All Plans</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===================================================
+       FOOTER
+       =================================================== -->
+  <footer class="sfs-footer">
+    <div class="sfs-container">
+      <p>&copy; 2025 SmartFlow Systems. All rights reserved.</p>
+      <p class="sfs-footer-links">
+        <a href="/">Home</a> &bull;
+        <a href="/pricing.html">Pricing</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/terms.html">Terms</a>
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ===================================================
+       SFS ANIMATED BACKGROUND — always last
+       =================================================== -->
+  <script src="sfs-bg.js"></script>
+
+  <!-- Mobile nav toggle (inline event-free script) -->
+  <script src="sfs-nav.js"></script>
+
+</body>
+</html>
