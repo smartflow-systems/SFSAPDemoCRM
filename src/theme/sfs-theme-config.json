@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "name": "SmartFlow Systems Design System",
+  "version": "1.0.0",
+  "description": "Shared design tokens for all SFS projects - sparkling gold with dark marble brown-tinted black aesthetic",
+
+  "colors": {
+    "brand": {
+      "black": {
+        "value": "#0D0D0D",
+        "description": "Primary dark background - marble black"
+      },
+      "brown": {
+        "value": "#3B2F2F",
+        "description": "Brown tint for overlays and accents"
+      },
+      "gold": {
+        "value": "#FFD700",
+        "description": "Primary accent - sparkling gold"
+      },
+      "goldHover": {
+        "value": "#E6C200",
+        "description": "Gold hover state"
+      },
+      "beige": {
+        "value": "#F5F5DC",
+        "description": "Light neutral, text on dark backgrounds"
+      },
+      "white": {
+        "value": "#FFFFFF",
+        "description": "Pure white for highlights"
+      }
+    },
+    "semantic": {
+      "primary": "#FFD700",
+      "primaryHover": "#E6C200",
+      "background": "#0D0D0D",
+      "surface": "#3B2F2F",
+      "text": "#F5F5DC",
+      "textHighlight": "#FFFFFF",
+      "border": "rgba(255, 215, 0, 0.2)"
+    }
+  },
+
+  "glassmorphism": {
+    "card": {
+      "backdrop": {
+        "blur": "12px",
+        "description": "Standard backdrop blur for glass cards"
+      },
+      "background": {
+        "default": "rgba(59, 47, 47, 0.4)",
+        "hover": "rgba(59, 47, 47, 0.5)",
+        "active": "rgba(59, 47, 47, 0.6)",
+        "description": "Semi-transparent brown-tinted backgrounds"
+      },
+      "border": {
+        "color": "rgba(255, 215, 0, 0.15)",
+        "width": "1px",
+        "style": "solid",
+        "description": "Subtle gold-tinted borders"
+      },
+      "shadow": {
+        "default": "0 8px 32px 0 rgba(13, 13, 13, 0.37)",
+        "hover": "0 12px 48px 0 rgba(255, 215, 0, 0.15)",
+        "description": "Depth shadows with gold glow on hover"
+      }
+    },
+    "panel": {
+      "backdrop": {
+        "blur": "16px"
+      },
+      "background": "rgba(13, 13, 13, 0.7)",
+      "border": {
+        "color": "rgba(255, 215, 0, 0.25)",
+        "width": "1px"
+      }
+    }
+  },
+
+  "layout": {
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "2xl": "48px",
+      "3xl": "64px"
+    },
+    "borderRadius": {
+      "sm": "4px",
+      "md": "8px",
+      "lg": "12px",
+      "xl": "16px",
+      "2xl": "24px",
+      "round": "50%",
+      "flow": "16px 4px",
+      "description": "Flow variants have smooth curves for Crickit-inspired design"
+    },
+    "shadows": {
+      "sm": "0 2px 8px rgba(13, 13, 13, 0.2)",
+      "md": "0 4px 16px rgba(13, 13, 13, 0.3)",
+      "lg": "0 8px 32px rgba(13, 13, 13, 0.37)",
+      "xl": "0 12px 48px rgba(13, 13, 13, 0.4)",
+      "goldGlow": "0 0 20px rgba(255, 215, 0, 0.3)",
+      "goldGlowStrong": "0 0 40px rgba(255, 215, 0, 0.5)",
+      "inner": "inset 0 2px 8px rgba(13, 13, 13, 0.3)"
+    },
+    "dashboard": {
+      "gridGap": "24px",
+      "cardPadding": "24px",
+      "headerHeight": "64px",
+      "sidebarWidth": "280px",
+      "contentMaxWidth": "1400px"
+    }
+  },
+
+  "flowDash": {
+    "description": "Crickit-inspired smooth flow dashboard accents",
+    "curves": {
+      "smooth": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+      "flow": "cubic-bezier(0.45, 0.05, 0.55, 0.95)"
+    },
+    "transitions": {
+      "fast": "150ms",
+      "normal": "250ms",
+      "slow": "350ms"
+    },
+    "goldAccents": {
+      "highlight": {
+        "background": "linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(230, 194, 0, 0.05) 100%)",
+        "border": "1px solid rgba(255, 215, 0, 0.3)"
+      },
+      "activeIndicator": {
+        "background": "#FFD700",
+        "boxShadow": "0 0 20px rgba(255, 215, 0, 0.6)"
+      },
+      "flowLine": {
+        "stroke": "#FFD700",
+        "strokeWidth": "2px",
+        "filter": "drop-shadow(0 0 4px rgba(255, 215, 0, 0.5))"
+      }
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "primary": "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
+      "monospace": "'Fira Code', 'Courier New', monospace"
+    },
+    "fontSize": {
+      "xs": "12px",
+      "sm": "14px",
+      "base": "16px",
+      "lg": "18px",
+      "xl": "20px",
+      "2xl": "24px",
+      "3xl": "30px",
+      "4xl": "36px"
+    },
+    "fontWeight": {
+      "normal": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700"
+    },
+    "lineHeight": {
+      "tight": "1.2",
+      "normal": "1.5",
+      "relaxed": "1.75"
+    }
+  },
+
+  "breakpoints": {
+    "mobile": "640px",
+    "tablet": "768px",
+    "desktop": "1024px",
+    "wide": "1280px",
+    "ultrawide": "1536px"
+  }
+}

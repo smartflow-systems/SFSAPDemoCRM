@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: sfs-crm-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sfscrm
+      POSTGRES_USER: sfscrm
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sfscrm_dev_pass}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sfscrm -d sfscrm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crm-network
+
+  # Application Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sfs-crm-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5000}:5000"
+    environment:
+      # Application
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 5000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5000}
+
+      # Database - Uses PostgreSQL service
+      DATABASE_URL: postgresql://sfscrm:${DB_PASSWORD:-sfscrm_dev_pass}@postgres:5432/sfscrm
+    volumes:
+      # Mount source code for hot-reload in development
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - crm-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  crm-network:
+    driver: bridge
+
+# Usage:
+# Development: docker-compose up
+# Production: docker-compose up -d
+# View logs: docker-compose logs -f app
+# Stop: docker-compose down
+# Clean volumes: docker-compose down -v

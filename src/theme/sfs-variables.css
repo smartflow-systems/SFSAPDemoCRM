@@ -1,0 +1,92 @@
+/* ============================================================================
+   SFS DESIGN SYSTEM - CSS Variables
+   ============================================================================
+   Correct SmartFlow Systems color variables
+   Use ONLY these values - DO NOT override with wrong colors
+   ============================================================================ */
+
+:root {
+  /* ========== CORE SMARTFLOW COLORS (EXACT VALUES) ========== */
+  --sf-black: #0D0D0D;           /* Primary dark background */
+  --sf-brown: #3B2F2F;           /* Brown tint for overlays */
+  --sf-gold: #FFD700;            /* Primary accent - EXACT GOLD */
+  --sf-gold-2: #E6C200;          /* Gold hover state */
+  --sf-gold-bright: #ffdd00;     /* Bright gold variant */
+  --sf-beige: #F5F5DC;           /* Light neutral text */
+  --sf-white: #FFFFFF;           /* Pure white highlights */
+
+  /* Gradients */
+  --sf-gold-grad: linear-gradient(135deg, #FFD700, #E6C200);
+
+  /* ========== TAILWIND COMPATIBILITY (HSL VALUES WITHOUT hsl() WRAPPER) ========== */
+  --background: 0 0% 5%;              /* Maps to #0D0D0D */
+  --foreground: 48 10% 98%;           /* Maps to #F5F5DC */
+  --card: 0 0% 8%;                    /* Slightly lighter than background */
+  --card-foreground: 48 10% 98%;      /* Text on cards */
+  --popover: 0 0% 7%;
+  --popover-foreground: 48 10% 98%;
+  --primary: 51 100% 50%;             /* Maps to #FFD700 - EXACT GOLD */
+  --primary-foreground: 0 0% 5%;      /* Text on gold buttons */
+  --secondary: 30 15% 18%;            /* Maps to #3B2F2F - brown */
+  --secondary-foreground: 48 10% 98%;
+  --muted: 30 10% 12%;
+  --muted-foreground: 45 10% 65%;
+  --accent: 51 91% 45%;               /* Accent gold */
+  --accent-foreground: 0 0% 5%;
+  --destructive: 0 72% 51%;           /* Red for errors */
+  --destructive-foreground: 48 10% 98%;
+  --border: 45 15% 20%;               /* Subtle borders */
+  --card-border: 51 50% 25%;          /* Gold-tinted card borders */
+  --input: 45 15% 25%;
+  --ring: 51 100% 50%;                /* Focus ring - gold */
+
+  /* ========== GLASSMORPHISM ========== */
+  --glass-bg: rgba(59, 47, 47, 0.4);
+  --glass-bg-hover: rgba(59, 47, 47, 0.5);
+  --glass-bg-active: rgba(59, 47, 47, 0.6);
+  --glass-border: rgba(255, 215, 0, 0.2);
+  --glass-border-hover: rgba(255, 215, 0, 0.35);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 32px rgba(13, 13, 13, 0.37);
+  --glass-shadow-hover: 0 12px 48px rgba(255, 215, 0, 0.15);
+
+  /* ========== LAYOUT ========== */
+  --sf-radius: 1rem;
+  --sf-blur: 12px;
+  --elevate-1: rgba(255, 215, 0, 0.06);
+  --elevate-2: rgba(255, 215, 0, 0.14);
+
+  /* ========== SHADOWS ========== */
+  --shadow-sm: 0px 2px 4px -1px rgba(0,0,0,0.35), 0px 1px 2px -1px rgba(0,0,0,0.50);
+  --shadow-md: 0px 6px 10px -2px rgba(0,0,0,0.45), 0px 2px 4px -2px rgba(0,0,0,0.35);
+  --shadow-lg: 0px 10px 15px -3px rgba(0,0,0,0.50), 0px 4px 6px -4px rgba(0,0,0,0.40);
+  --shadow-xl: 0px 20px 25px -5px rgba(0,0,0,0.55), 0px 8px 10px -6px rgba(0,0,0,0.40);
+
+  /* ========== SIDEBAR ========== */
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 60px;
+  --sidebar-bg: rgba(13, 13, 13, 0.95);
+  --sidebar-border: rgba(255, 215, 0, 0.15);
+  --sidebar-item-hover: rgba(255, 215, 0, 0.1);
+  --sidebar-item-active: rgba(255, 215, 0, 0.2);
+}
+
+/* ========== NO DARK MODE OVERRIDE ========== */
+/* The SFS theme is ALWAYS dark - do not add .dark { } overrides */
+/* If you need light mode, create a separate light-theme.css */
+
+/* ========== TYPOGRAPHY ========== */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--sf-black);
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+}
+
+/* ========== UTILITY CLASSES ========== */
+.text-sf-gold { color: var(--sf-gold); }
+.text-sf-beige { color: var(--sf-beige); }
+.bg-sf-black { background-color: var(--sf-black); }
+.bg-sf-brown { background-color: var(--sf-brown); }
+.bg-sf-gold { background-color: var(--sf-gold); }
+.border-sf-gold { border-color: var(--sf-gold); }

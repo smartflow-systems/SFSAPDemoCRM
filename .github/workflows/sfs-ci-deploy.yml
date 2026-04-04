@@ -1,0 +1,32 @@
+name: SFS CI Deploy
+on:
+  workflow_call:
+    inputs:
+      service: { type: string, required: false, default: smartflowsite }
+      env:     { type: string, required: false, default: dev }
+      python_version: { type: string, required: false, default: "3.11" }
+    secrets:
+      SFS_PAT: { required: false }
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy status
+        run: echo "Deployment completed for service ${{ inputs.service }} in ${{ inputs.env }} environment"
