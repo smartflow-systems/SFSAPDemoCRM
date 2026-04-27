@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 :root {
+  --sfs-black:        #0D0D0D;
+  --sfs-brown:        #3B2F2F;
+  --sfs-gold:         #FFD700;
+  --sfs-gold-hover:   #E6C200;
+  --sfs-beige:        #F5F5DC;
+  --sfs-glass-bg:     rgba(59,47,47,0.65);
+  --sfs-glass-blur:   blur(16px) saturate(180%);
+  --sfs-glass-border: 1px solid rgba(255,215,0,0.20);
+  --sfs-font:         'Inter','Segoe UI',Roboto,sans-serif;
+
   --brown-900: hsl(14, 24%, 23%);
   --black-900: hsl(0, 0%, 4%);
   --gold-100: hsl(51, 100%, 90%);
@@ -34,10 +44,25 @@
   --ring: hsl(51, 100%, 45%);
 }
 
-html, body { 
-  background: var(--brown-900); 
-  color: var(--gold-100); 
-  font-family: 'Inter', sans-serif;
+html { background: #0D0D0D; }
+body { 
+  background: transparent;
+  color: var(--sfs-beige); 
+  font-family: var(--sfs-font);
+}
+
+.brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.nav-logo {
+  height: 52px;
+  width: auto;
+  max-width: 240px;
+  display: block;
+  object-fit: contain;
 }
 
 /* Metallic gold text */

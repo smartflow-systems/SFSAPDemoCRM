@@ -1,0 +1,150 @@
+name: SFS Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  claude-review:
+    runs-on: ubuntu-latest
+    name: AI Code Quality Review
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Anthropic SDK
+        run: |
+          npm install @anthropic-ai/sdk@latest
+
+      - name: Run Claude Code Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat > review.js << 'EOF'
+          const Anthropic = require('@anthropic-ai/sdk');
+          const { execSync } = require('child_process');
+          const fs = require('fs');
+
+          async function reviewCode() {
+            const anthropic = new Anthropic({
+              apiKey: process.env.ANTHROPIC_API_KEY,
+            });
+
+            // Get changed files
+            let changedFiles;
+            try {
+              changedFiles = execSync('git diff --name-only HEAD~1 HEAD', { encoding: 'utf8' });
+            } catch (e) {
+              changedFiles = execSync('git diff --name-only origin/main HEAD', { encoding: 'utf8' });
+            }
+
+            if (!changedFiles.trim()) {
+              console.log('No files changed, skipping review');
+              return;
+            }
+
+            // Get diff content
+            const diff = execSync('git diff HEAD~1 HEAD', { encoding: 'utf8' });
+
+            const prompt = `You are reviewing code for SmartFlow Systems (SFS), a suite of AI-powered business automation tools.
+
+**SFS STANDARDS TO ENFORCE:**
+
+1. **Brand Guidelines**
+   - Colors: Black #0D0D0D, Brown #3B2F2F, Gold #FFD700
+   - Glassmorphism design patterns
+   - Consistency across all SFS apps
+
+2. **Security Requirements**
+   - NO hardcoded secrets (use environment variables)
+   - MUST use parameterized queries for all database operations
+   - MUST sanitize user input with DOMPurify for innerHTML
+   - Validate all external inputs
+
+3. **Code Quality**
+   - TypeScript strict mode compliance
+   - Python type hints required
+   - Self-documenting variable names
+   - Comments only for complex business logic
+
+4. **SFS Infrastructure Standards**
+   - Health endpoint: GET /health → {"ok":true}
+   - Bash scripts MUST use: set -euo pipefail
+   - CI/CD must pass (GitHub Actions)
+   - Show file paths in brackets [path/to/file.ts]
+
+5. **Stack Compliance**
+   - Frontend: React 18/19, TypeScript, Tailwind, Radix UI
+   - Backend: Node.js, Python FastAPI, Prisma ORM
+   - Deployment: Replit compatible
+
+**YOUR TASK:**
+Review these changes and provide:
+- Security vulnerabilities found
+- Brand guideline violations
+- Code quality issues
+- Missing health endpoints or error handling
+- Suggestions for improvement
+
+Be specific, cite line numbers, and prioritize security issues.
+
+**Changed Files:**
+${changedFiles}
+
+**Diff:**
+\`\`\`diff
+${diff.substring(0, 50000)}
+\`\`\`
+
+Provide a concise review focusing on the most important issues.`;
+
+            const message = await anthropic.messages.create({
+              model: 'claude-sonnet-4-5-20250929',
+              max_tokens: 4096,
+              messages: [{
+                role: 'user',
+                content: prompt
+              }]
+            });
+
+            const review = message.content[0].text;
+
+            console.log('════════════════════════════════════════════════════════════════');
+            console.log('   CLAUDE CODE REVIEW RESULTS');
+            console.log('════════════════════════════════════════════════════════════════');
+            console.log(review);
+            console.log('════════════════════════════════════════════════════════════════');
+
+            // Save review to file for artifact
+            fs.writeFileSync('claude-review.txt', review);
+          }
+
+          reviewCode().catch(console.error);
+          EOF
+
+          node review.js
+
+      - name: Upload Review Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-review-results
+          path: claude-review.txt
+          retention-days: 30

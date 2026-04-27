@@ -1,0 +1,16 @@
+{
+  "leads": [
+    {
+      "id": "lead_1776509497729_mifdppv1m",
+      "firstName": "gareth",
+      "lastName": "bowers",
+      "email": "garethbowers@hotmail.com",
+      "company": "",
+      "phone": "7521083350",
+      "source": "direct",
+      "status": "new",
+      "createdAt": "2026-04-18T10:51:37.729Z",
+      "updatedAt": "2026-04-18T10:51:37.729Z"
+    }
+  ]
+}

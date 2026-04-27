@@ -1,0 +1,721 @@
+/**
+ * ============================================================================
+ * SFS UI KIT — SmartFlow Systems Design System
+ * ============================================================================
+ * Drop into any SFS repo for instant brand-consistent styling.
+ *
+ * USAGE:
+ *   <link rel="stylesheet" href="sfs-kit/sfs-ui.css">
+ *   <script src="sfs-kit/sfs-bg.js"></script>
+ *
+ * VERSION: 1.0  |  Brand: Black / Brown / Gold / Beige
+ * ============================================================================
+ */
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* Brand colours */
+  --sfs-black:      #0D0D0D;
+  --sfs-brown:      #3B2F2F;
+  --sfs-gold:       #FFD700;
+  --sfs-gold-hover: #E6C200;
+  --sfs-beige:      #F5F5DC;
+  --sfs-white:      #FFFFFF;
+
+  /* Semantic */
+  --sfs-success:    #10B981;
+  --sfs-error:      #EF4444;
+  --sfs-warning:    #F59E0B;
+  --sfs-info:       #3B82F6;
+
+  /* Transparency helpers */
+  --sfs-gold-10:    rgba(255, 215, 0, 0.10);
+  --sfs-gold-20:    rgba(255, 215, 0, 0.20);
+  --sfs-gold-30:    rgba(255, 215, 0, 0.30);
+  --sfs-gold-60:    rgba(255, 215, 0, 0.60);
+  --sfs-brown-70:   rgba(59, 47, 47, 0.70);
+  --sfs-brown-80:   rgba(59, 47, 47, 0.80);
+  --sfs-black-80:   rgba(13, 13, 13, 0.80);
+  --sfs-muted:      rgba(245, 245, 220, 0.55);
+
+  /* Typography */
+  --sfs-font:       'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --sfs-font-mono:  'Monaco', 'Courier New', monospace;
+
+  /* Spacing (4px grid) */
+  --sfs-space-1:    4px;
+  --sfs-space-2:    8px;
+  --sfs-space-3:    12px;
+  --sfs-space-4:    16px;
+  --sfs-space-6:    24px;
+  --sfs-space-8:    32px;
+  --sfs-space-12:   48px;
+  --sfs-space-16:   64px;
+
+  /* Borders */
+  --sfs-radius-sm:  8px;
+  --sfs-radius-md:  12px;
+  --sfs-radius-lg:  16px;
+  --sfs-radius-xl:  24px;
+  --sfs-radius-pill:999px;
+
+  /* Shadows */
+  --sfs-shadow-sm:  0 2px 8px  rgba(0, 0, 0, 0.10);
+  --sfs-shadow-md:  0 4px 16px rgba(0, 0, 0, 0.12);
+  --sfs-shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.15);
+  --sfs-shadow-xl:  0 12px 48px rgba(0, 0, 0, 0.20);
+  --sfs-shadow-gold:0 8px 32px rgba(255, 215, 0, 0.30);
+
+  /* Glass */
+  --sfs-glass-bg:   rgba(59, 47, 47, 0.65);
+  --sfs-glass-blur: blur(16px) saturate(180%);
+  --sfs-glass-border: 1px solid rgba(255, 215, 0, 0.20);
+}
+
+/* ============================================================
+   2. RESET + BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--sfs-black);
+  color: var(--sfs-beige);
+  font-family: var(--sfs-font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--sfs-gold);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover { color: var(--sfs-gold-hover); }
+
+img, video { max-width: 100%; display: block; }
+
+/* ============================================================
+   3. TYPOGRAPHY SCALE
+   ============================================================ */
+.sfs-h1 { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 700; line-height: 1.1; }
+.sfs-h2 { font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 700; line-height: 1.2; }
+.sfs-h3 { font-size: clamp(1.2rem, 2vw, 1.875rem); font-weight: 600; line-height: 1.3; }
+.sfs-h4 { font-size: 1.5rem; font-weight: 600; line-height: 1.4; }
+.sfs-body-lg { font-size: 1.125rem; line-height: 1.6; }
+.sfs-body    { font-size: 1rem;     line-height: 1.6; }
+.sfs-body-sm { font-size: 0.875rem; line-height: 1.5; }
+.sfs-caption { font-size: 0.75rem;  line-height: 1.4; }
+.sfs-mono    { font-family: var(--sfs-font-mono); }
+
+.sfs-gold-text {
+  background: linear-gradient(135deg, var(--sfs-gold), var(--sfs-gold-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sfs-muted { color: var(--sfs-muted); }
+.sfs-center { text-align: center; }
+
+/* ============================================================
+   4. LAYOUT
+   ============================================================ */
+.sfs-container {
+  width: min(1200px, 92%);
+  margin-inline: auto;
+}
+
+.sfs-section {
+  padding: var(--sfs-space-16) 0;
+}
+
+.sfs-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sfs-space-6); }
+.sfs-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sfs-space-6); }
+.sfs-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--sfs-space-4); }
+
+.sfs-flex   { display: flex; align-items: center; }
+.sfs-flex-center { display: flex; align-items: center; justify-content: center; }
+.sfs-flex-between { display: flex; align-items: center; justify-content: space-between; }
+.sfs-gap-2  { gap: var(--sfs-space-2); }
+.sfs-gap-4  { gap: var(--sfs-space-4); }
+.sfs-gap-6  { gap: var(--sfs-space-6); }
+.sfs-gap-8  { gap: var(--sfs-space-8); }
+
+/* ============================================================
+   5. ANIMATED BACKGROUND (canvas injected by sfs-bg.js)
+   ============================================================ */
+#sfs-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body > *:not(#sfs-bg-canvas) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   6. NAVIGATION
+   ============================================================ */
+.sfs-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 4vw;
+  background: linear-gradient(135deg, rgba(13, 13, 13, 0.80), rgba(59, 47, 47, 0.60));
+  backdrop-filter: var(--sfs-glass-blur);
+  border-bottom: var(--sfs-glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.sfs-nav-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--sfs-beige);
+}
+.sfs-nav-brand:hover { color: var(--sfs-gold); }
+
+.sfs-nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--sfs-space-8);
+}
+
+.sfs-nav-links a {
+  color: var(--sfs-muted);
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+.sfs-nav-links a:hover,
+.sfs-nav-links a.active { color: var(--sfs-gold); }
+
+/* Mobile nav toggle */
+.sfs-nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--sfs-gold);
+  font-size: 1.75rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+@media (max-width: 768px) {
+  .sfs-nav-toggle { display: block; }
+  .sfs-nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(13, 13, 13, 0.96);
+    backdrop-filter: blur(20px);
+    border-bottom: var(--sfs-glass-border);
+    padding: var(--sfs-space-6);
+    gap: var(--sfs-space-4);
+  }
+  .sfs-nav-links.open { display: flex; }
+}
+
+/* ============================================================
+   7. HERO
+   ============================================================ */
+.sfs-hero {
+  display: grid;
+  place-items: center;
+  min-height: 72vh;
+  text-align: center;
+  padding: var(--sfs-space-12) var(--sfs-space-4);
+  background:
+    radial-gradient(900px 400px at 30% 0%, rgba(255, 215, 0, 0.05), transparent),
+    linear-gradient(180deg, rgba(255, 215, 0, 0.03), transparent 50%);
+}
+
+.sfs-hero-inner {
+  max-width: 760px;
+}
+
+.sfs-hero h1,
+.sfs-hero .sfs-h1 {
+  margin-bottom: var(--sfs-space-4);
+}
+
+.sfs-hero p,
+.sfs-hero .sfs-lead {
+  font-size: 1.2rem;
+  color: var(--sfs-muted);
+  max-width: 620px;
+  margin: 0 auto var(--sfs-space-8);
+}
+
+.sfs-hero-ctas {
+  display: flex;
+  gap: var(--sfs-space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   8. GLASS CARDS
+   ============================================================ */
+.sfs-card {
+  background: var(--sfs-glass-bg);
+  backdrop-filter: var(--sfs-glass-blur);
+  border: var(--sfs-glass-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--sfs-radius-lg);
+  padding: var(--sfs-space-8);
+  box-shadow: var(--sfs-shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sfs-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transition: left 0.6s ease;
+}
+
+.sfs-card:hover::before { left: 100%; }
+
+.sfs-card:hover {
+  border-color: rgba(255, 215, 0, 0.50);
+  transform: translateY(-4px);
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.25), var(--sfs-shadow-xl);
+}
+
+/* Card variants */
+.sfs-card-featured {
+  border-color: rgba(255, 215, 0, 0.50);
+  background: linear-gradient(150deg, rgba(255, 215, 0, 0.10), rgba(59, 47, 47, 0.80));
+}
+
+.sfs-card-sm { padding: var(--sfs-space-4); border-radius: var(--sfs-radius-md); }
+.sfs-card-lg { padding: var(--sfs-space-12); border-radius: var(--sfs-radius-xl); }
+
+/* ============================================================
+   9. BUTTONS
+   ============================================================ */
+.sfs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--sfs-radius-pill);
+  font-size: 1rem;
+  font-family: var(--sfs-font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.sfs-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.5s;
+}
+.sfs-btn:hover::after { left: 100%; }
+
+/* Primary / Gold */
+.sfs-btn-primary,
+.sfs-btn-gold {
+  background: linear-gradient(135deg, var(--sfs-gold), var(--sfs-gold-hover));
+  color: var(--sfs-black);
+  border-color: var(--sfs-gold);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.35);
+}
+.sfs-btn-primary:hover,
+.sfs-btn-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(255, 215, 0, 0.55);
+  color: var(--sfs-black);
+}
+
+/* Ghost */
+.sfs-btn-ghost {
+  background: rgba(255, 215, 0, 0.08);
+  color: var(--sfs-gold);
+  border-color: rgba(255, 215, 0, 0.30);
+}
+.sfs-btn-ghost:hover {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.60);
+  transform: translateY(-2px);
+}
+
+/* Sizes */
+.sfs-btn-sm { padding: 8px 16px; font-size: 0.875rem; }
+.sfs-btn-lg { padding: 16px 36px; font-size: 1.125rem; }
+
+/* Full width */
+.sfs-btn-block { width: 100%; justify-content: center; border-radius: var(--sfs-radius-md); }
+
+/* Disabled */
+.sfs-btn:disabled, .sfs-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ============================================================
+   10. BADGES & TAGS
+   ============================================================ */
+.sfs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--sfs-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.sfs-badge-gold {
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.30);
+  color: var(--sfs-gold);
+}
+.sfs-badge-solid {
+  background: linear-gradient(135deg, var(--sfs-gold), var(--sfs-gold-hover));
+  color: var(--sfs-black);
+}
+.sfs-badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.30);
+  color: #10B981;
+}
+
+/* ============================================================
+   11. FORMS
+   ============================================================ */
+.sfs-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--sfs-beige);
+  margin-bottom: 6px;
+}
+
+.sfs-input,
+.sfs-select,
+.sfs-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.20);
+  border-radius: var(--sfs-radius-md);
+  color: var(--sfs-beige);
+  font-size: 1rem;
+  font-family: var(--sfs-font);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.sfs-input:focus,
+.sfs-select:focus,
+.sfs-textarea:focus {
+  outline: none;
+  border-color: var(--sfs-gold);
+  background: rgba(255, 215, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
+}
+
+.sfs-input::placeholder,
+.sfs-textarea::placeholder { color: rgba(245, 245, 220, 0.30); }
+
+.sfs-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--sfs-space-4); }
+.sfs-field-error { font-size: 0.8rem; color: var(--sfs-error); display: none; }
+.sfs-field.error .sfs-input { border-color: var(--sfs-error); }
+.sfs-field.error .sfs-field-error { display: block; }
+.sfs-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sfs-space-4); }
+
+@media (max-width: 600px) {
+  .sfs-form-row { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   12. SECTION TITLE
+   ============================================================ */
+.sfs-section-title {
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: var(--sfs-space-2);
+}
+
+.sfs-section-subtitle {
+  color: var(--sfs-muted);
+  font-size: 1.1rem;
+  margin-bottom: var(--sfs-space-8);
+}
+
+.sfs-section-header {
+  text-align: center;
+  margin-bottom: var(--sfs-space-12);
+}
+
+/* ============================================================
+   13. PRICING CARD
+   ============================================================ */
+.sfs-price-card {
+  composes: sfs-card;
+  background: var(--sfs-glass-bg);
+  backdrop-filter: var(--sfs-glass-blur);
+  border: var(--sfs-glass-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--sfs-radius-xl);
+  padding: var(--sfs-space-8);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sfs-price-card:hover {
+  border-color: rgba(255, 215, 0, 0.60);
+  transform: translateY(-6px);
+  box-shadow: 0 0 32px rgba(255, 215, 0, 0.30), var(--sfs-shadow-xl);
+  animation: sfs-pulse 2s ease-in-out infinite alternate;
+}
+
+.sfs-price-card.featured {
+  border-color: rgba(255, 215, 0, 0.50);
+  background: linear-gradient(150deg, rgba(255, 215, 0, 0.10), rgba(59, 47, 47, 0.85));
+  transform: scale(1.04);
+}
+.sfs-price-card.featured:hover {
+  transform: scale(1.04) translateY(-6px);
+}
+
+.sfs-price-amount {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--sfs-gold);
+  margin: 12px 0;
+}
+.sfs-price-period {
+  font-size: 1rem;
+  color: var(--sfs-muted);
+  font-weight: 400;
+}
+
+.sfs-plan-features {
+  list-style: none;
+  text-align: left;
+  margin: var(--sfs-space-6) 0;
+}
+.sfs-plan-features li {
+  padding: 10px 0;
+  padding-left: 28px;
+  position: relative;
+  color: var(--sfs-beige);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.sfs-plan-features li:last-child { border-bottom: none; }
+.sfs-plan-features li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--sfs-gold);
+  font-weight: bold;
+}
+
+/* ============================================================
+   14. TESTIMONIAL / QUOTE
+   ============================================================ */
+.sfs-testimonial {
+  background: var(--sfs-glass-bg);
+  backdrop-filter: var(--sfs-glass-blur);
+  border: var(--sfs-glass-border);
+  border-radius: var(--sfs-radius-xl);
+  padding: var(--sfs-space-8);
+  position: relative;
+}
+
+.sfs-testimonial::before {
+  content: '"';
+  position: absolute;
+  top: -10px; left: 24px;
+  font-size: 5rem;
+  color: var(--sfs-gold);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.sfs-testimonial blockquote {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  font-style: italic;
+  color: var(--sfs-beige);
+}
+
+.sfs-testimonial cite {
+  display: block;
+  margin-top: var(--sfs-space-4);
+  color: var(--sfs-gold);
+  font-size: 0.9rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ============================================================
+   15. DIVIDER
+   ============================================================ */
+.sfs-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.30), transparent);
+  margin: var(--sfs-space-12) 0;
+}
+
+/* ============================================================
+   16. FOOTER
+   ============================================================ */
+.sfs-footer {
+  padding: var(--sfs-space-12) 0;
+  border-top: 1px solid rgba(255, 215, 0, 0.12);
+  text-align: center;
+  color: var(--sfs-muted);
+  font-size: 0.9rem;
+}
+
+.sfs-footer a {
+  color: var(--sfs-gold);
+  margin: 0 var(--sfs-space-2);
+}
+.sfs-footer a:hover { color: var(--sfs-gold-hover); }
+
+.sfs-footer-links {
+  margin-top: var(--sfs-space-2);
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   17. ANIMATIONS
+   ============================================================ */
+@keyframes sfs-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sfs-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sfs-slide-down {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sfs-scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes sfs-pulse {
+  0%   { box-shadow: 0 0 28px rgba(255, 215, 0, 0.30), var(--sfs-shadow-xl); }
+  100% { box-shadow: 0 0 48px rgba(255, 215, 0, 0.55), var(--sfs-shadow-xl); }
+}
+
+@keyframes sfs-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.sfs-animate-fade-in    { animation: sfs-fade-in  0.6s ease-out; }
+.sfs-animate-slide-up   { animation: sfs-slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.sfs-animate-scale-in   { animation: sfs-scale-in 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Staggered children */
+.sfs-stagger > *    { animation: sfs-slide-up 0.6s ease-out backwards; }
+.sfs-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.sfs-stagger > *:nth-child(2) { animation-delay: 0.12s; }
+.sfs-stagger > *:nth-child(3) { animation-delay: 0.19s; }
+.sfs-stagger > *:nth-child(4) { animation-delay: 0.26s; }
+.sfs-stagger > *:nth-child(5) { animation-delay: 0.33s; }
+.sfs-stagger > *:nth-child(6) { animation-delay: 0.40s; }
+
+/* ============================================================
+   18. UTILITY CLASSES
+   ============================================================ */
+/* Colour utilities */
+.sfs-bg-black  { background-color: var(--sfs-black); }
+.sfs-bg-brown  { background-color: var(--sfs-brown); }
+.sfs-bg-gold   { background-color: var(--sfs-gold); }
+.sfs-text-gold { color: var(--sfs-gold); }
+.sfs-text-beige{ color: var(--sfs-beige); }
+.sfs-text-muted{ color: var(--sfs-muted); }
+
+/* Spacing */
+.sfs-mt-4  { margin-top:    var(--sfs-space-4); }
+.sfs-mb-4  { margin-bottom: var(--sfs-space-4); }
+.sfs-mt-8  { margin-top:    var(--sfs-space-8); }
+.sfs-mb-8  { margin-bottom: var(--sfs-space-8); }
+.sfs-mt-12 { margin-top:    var(--sfs-space-12); }
+.sfs-mb-12 { margin-bottom: var(--sfs-space-12); }
+.sfs-p-4   { padding: var(--sfs-space-4); }
+.sfs-p-6   { padding: var(--sfs-space-6); }
+.sfs-p-8   { padding: var(--sfs-space-8); }
+
+/* Visibility */
+.sfs-hidden { display: none !important; }
+.sfs-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ============================================================
+   19. SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(255, 215, 0, 0.04); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 215, 0, 0.45); }
+
+/* ============================================================
+   20. CTA CARD
+   ============================================================ */
+.sfs-cta-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   21. RESPONSIVE UTILITIES
+   ============================================================ */
+@media (max-width: 640px)  { .sfs-hide-sm  { display: none !important; } }
+@media (max-width: 768px)  { .sfs-hide-md  { display: none !important; } }
+@media (min-width: 769px)  { .sfs-show-sm  { display: none !important; } }

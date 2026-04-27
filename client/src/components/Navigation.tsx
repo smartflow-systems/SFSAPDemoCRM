@@ -28,50 +28,53 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="panel-dark border-b border-gold-800/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Hamburger Menu */}
-          <div className="flex items-center space-x-3">
-            <HamburgerMenu />
+    <nav style={{
+      background: 'linear-gradient(135deg, rgba(13,13,13,.8), rgba(59,47,47,.6))',
+      backdropFilter: 'saturate(180%) blur(20px)',
+      borderBottom: '1px solid rgba(255,215,0,.4)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+    }}>
+      {/* Left — Hamburger + Logo */}
+      <div className="flex items-center gap-3">
+        <HamburgerMenu />
+        <a className="brand" href="/">
+          <img
+            src="/sfs-kit/sfs-logo-nav.png"
+            alt="SmartFlow Systems"
+            className="nav-logo"
+          />
+        </a>
+      </div>
 
-            {/* Logo */}
-            <div className="flex items-center">
-              <div className="text-gold-shine text-xl font-extrabold">Smart Flow Systems</div>
-              <span className="text-gold-300 text-sm ml-2">CRM</span>
-            </div>
-          </div>
+      {/* Centre — Nav Links (desktop) */}
+      <div className="hidden md:flex items-center gap-1">
+        {navLinks.map((link) => (
+          <Link
+            key={link.id}
+            href={link.href}
+            className={`px-3 py-2 rounded-md text-sm font-semibold transition-colors ${
+              isActive(link.href)
+                ? "text-[#FFD700]"
+                : "text-[#F5F5DC] hover:text-[#FFD700]"
+            }`}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
 
-          {/* Navigation Links - Desktop */}
-          <div className="hidden md:block">
-            <div className="flex items-baseline space-x-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.id}
-                  href={link.href}
-                  className={`px-3 py-2 rounded-md font-semibold transition-colors ${
-                    isActive(link.href)
-                      ? "text-gold"
-                      : "text-gold-300 hover:text-gold-100"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* User Menu - Desktop */}
-          <div className="hidden md:flex items-center space-x-3">
-            <span className="text-gold-300 text-sm">{user?.fullName}</span>
-            <button
-              onClick={logout}
-              className="btn-gold-ghost text-sm"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+      {/* Right — User Menu (desktop) */}
+      <div className="hidden md:flex items-center gap-3">
+        <span className="text-sm" style={{ color: 'var(--sfs-beige)' }}>{user?.fullName}</span>
+        <button
+          onClick={logout}
+          className="sfs-btn sfs-btn-ghost"
+          style={{ padding: '6px 16px', fontSize: '0.85rem' }}
+        >
+          Sign Out
+        </button>
       </div>
     </nav>
   );

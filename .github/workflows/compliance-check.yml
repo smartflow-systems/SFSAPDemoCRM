@@ -1,0 +1,90 @@
+name: Repository Compliance Check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    name: Verify Compliance Standards
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check LICENSE file
+        run: |
+          if [ ! -f LICENSE ]; then
+            echo "❌ ERROR: LICENSE file is missing"
+            echo "Please add a LICENSE file (MIT recommended) to repository root"
+            exit 1
+          fi
+          echo "✓ LICENSE file found"
+
+      - name: Check AGENTS.md file
+        run: |
+          if [ ! -f AGENTS.md ]; then
+            echo "❌ ERROR: AGENTS.md file is missing"
+            echo "Please add AGENTS.md with AI assistant guidelines"
+            exit 1
+          fi
+          echo "✓ AGENTS.md file found"
+
+      - name: Check .gitignore file
+        run: |
+          if [ ! -f .gitignore ]; then
+            echo "⚠ WARNING: .gitignore file is missing"
+            echo "Consider adding a .gitignore file for this project type"
+          else
+            echo "✓ .gitignore file found"
+          fi
+
+      - name: Check for exposed secrets
+        run: |
+          # Check for common secret patterns
+          if grep -r "ghp_" . --exclude-dir=.git --exclude-dir=node_modules 2>/dev/null; then
+            echo "❌ ERROR: Exposed GitHub token detected"
+            exit 1
+          fi
+
+          if grep -r "github_pat_" . --exclude-dir=.git --exclude-dir=node_modules 2>/dev/null; then
+            echo "❌ ERROR: Exposed GitHub token detected"
+            exit 1
+          fi
+
+          echo "✓ No exposed secrets found"
+
+      - name: Verify Node version in package.json
+        if: hashFiles('package.json') != ''
+        run: |
+          if ! grep -q '"node"' package.json; then
+            echo "⚠ WARNING: Node version not specified in package.json"
+            echo "Recommended: add 'node': '>=18.0.0' to engines section"
+          else
+            node_version=$(grep -o '"node"[^}]*' package.json | head -1)
+            echo "✓ Node version specified: $node_version"
+          fi
+
+      - name: Verify main branch usage
+        run: |
+          current_branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          if [ "$current_branch" = "master" ]; then
+            echo "⚠ WARNING: Using 'master' branch instead of 'main'"
+            echo "Consider renaming to 'main' for consistency"
+          else
+            echo "✓ Using recommended branch naming"
+          fi
+
+      - name: Report compliance status
+        if: success()
+        run: |
+          echo "✅ All compliance checks passed!"
+          echo ""
+          echo "Repository meets SmartFlow Systems standards:"
+          echo "  - LICENSE file present"
+          echo "  - AGENTS.md guidelines documented"
+          echo "  - No exposed secrets"
+          echo "  - Node version specified (if applicable)"

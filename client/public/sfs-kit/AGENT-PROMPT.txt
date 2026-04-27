@@ -1,0 +1,210 @@
+====================================================================
+ SFS AGENT PROMPT — SmartFlow Systems Theme & Layout
+ Give this file (plus the sfs-kit/ folder) to your agent.
+====================================================================
+
+You are updating this repo to match the SmartFlow Systems (SFS)
+design system. Follow every step below exactly.
+
+
+--------------------------------------------------------------------
+STEP 1 — COPY THE KIT FILES
+--------------------------------------------------------------------
+Copy the entire sfs-kit/ folder into this project's public/ directory
+so the structure looks like:
+
+  public/
+  └── sfs-kit/
+      ├── sfs-ui.css        ← full design system CSS
+      ├── sfs-bg.js         ← gold particle/twinkle background
+      ├── sfs-nav.js        ← mobile nav toggle helper
+      ├── sfs-logo-nav.png  ← official logo (transparent, cropped)
+      └── AGENT-PROMPT.txt  ← this file
+
+If the project uses React/Vite, place the folder at:
+  client/public/sfs-kit/
+
+If it is a Next.js (App Router) project, place the folder at:
+  public/sfs-kit/
+
+
+--------------------------------------------------------------------
+STEP 2 — WIRE UP EVERY HTML PAGE / LAYOUT FILE
+--------------------------------------------------------------------
+
+For plain HTML or Express (EJS/Pug/Handlebars) projects:
+  Add inside <head>:
+    <link rel="stylesheet" href="/sfs-kit/sfs-ui.css">
+  Add before </body>:
+    <script src="/sfs-kit/sfs-bg.js"></script>
+
+For React / Vite (client/index.html):
+  Add inside <head>:
+    <link rel="stylesheet" href="/sfs-kit/sfs-ui.css">
+  Add before </body>:
+    <script src="/sfs-kit/sfs-bg.js"></script>
+
+For Next.js (App Router — app/layout.tsx):
+  Add at top of file:
+    import Script from 'next/script'
+  Add inside the <head> JSX element:
+    <link rel="stylesheet" href="/sfs-kit/sfs-ui.css"/>
+  Add inside <body> JSX element (after {children}):
+    <Script src="/sfs-kit/sfs-bg.js" strategy="lazyOnload"/>
+
+Do NOT add any inline <style> or <script> blocks.
+All CSS and JS must be external files (CSP compliance).
+
+
+--------------------------------------------------------------------
+STEP 3 — UPDATE THE NAVBAR / HEADER
+--------------------------------------------------------------------
+Replace whatever text or placeholder is currently in the navbar
+brand/logo slot with the image logo:
+
+  <a class="brand" href="/">
+    <img src="/sfs-kit/sfs-logo-nav.png"
+         alt="SmartFlow Systems"
+         class="nav-logo">
+  </a>
+
+Add this CSS (or merge into the existing stylesheet):
+
+  .brand {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .nav-logo {
+    height: 52px;
+    width: auto;
+    max-width: 240px;
+    display: block;
+    object-fit: contain;
+  }
+
+The navbar bar itself should use these styles:
+  background: linear-gradient(135deg, rgba(13,13,13,.8), rgba(59,47,47,.6));
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255,215,0,.4);
+  padding: 14px 4vw;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+
+--------------------------------------------------------------------
+STEP 4 — APPLY DESIGN TOKENS
+--------------------------------------------------------------------
+Set the following CSS custom properties on :root, or add to
+the existing root/global CSS file:
+
+  :root {
+    --sfs-black:        #0D0D0D;
+    --sfs-brown:        #3B2F2F;
+    --sfs-gold:         #FFD700;
+    --sfs-gold-hover:   #E6C200;
+    --sfs-beige:        #F5F5DC;
+    --sfs-glass-bg:     rgba(59,47,47,0.65);
+    --sfs-glass-blur:   blur(16px) saturate(180%);
+    --sfs-glass-border: 1px solid rgba(255,215,0,0.20);
+    --sfs-font:         'Inter','Segoe UI',Roboto,sans-serif;
+  }
+
+  html { background: #0D0D0D; }
+  body { background: transparent; font-family: var(--sfs-font); color: var(--sfs-beige); }
+
+
+--------------------------------------------------------------------
+STEP 5 — USE SFS COMPONENTS (KEY CLASSES)
+--------------------------------------------------------------------
+Replace any existing card/button/section components with these:
+
+  Glass card:
+    <div class="sfs-card"> ... </div>
+
+  Featured/highlighted card:
+    <div class="sfs-card sfs-card-featured"> ... </div>
+
+  Gold primary button:
+    <a class="sfs-btn sfs-btn-primary">Get Started</a>
+
+  Ghost/outline button:
+    <a class="sfs-btn sfs-btn-ghost">Learn More</a>
+
+  Gold badge:
+    <span class="sfs-badge sfs-badge-gold">NEW</span>
+
+  Section heading:
+    <h2 class="sfs-section-title sfs-gold-text">Your Heading</h2>
+
+  3-column responsive grid:
+    <div class="sfs-grid-3 sfs-stagger"> ... </div>
+
+  Slide-up animation on any element:
+    class="sfs-animate-slide-up"
+
+All component styles are defined in sfs-ui.css — do not re-define them.
+
+
+--------------------------------------------------------------------
+STEP 6 — BACKGROUND ANIMATION (AUTO)
+--------------------------------------------------------------------
+sfs-bg.js is self-injecting. Once the <script> tag is added in
+Step 2, it automatically:
+  • Creates a <canvas> element behind all content
+  • Animates the gold particle/twinkle constellation
+  • Pauses when the tab is hidden (battery-efficient)
+
+Do NOT manually create the canvas or call any init function.
+The script handles everything.
+
+CONFIG (optional — edit CONFIG object at top of sfs-bg.js):
+  nodeCount:          45    (more = denser network)
+  connectionDistance: 160   (max line length px)
+  nodeSpeed:          0.28  (drift speed)
+  goldAlpha:          0.14  (line transparency)
+  sparkleCount:       60    (twinkling stars)
+
+
+--------------------------------------------------------------------
+STEP 7 — EMOJI ICON TINT (OPTIONAL)
+--------------------------------------------------------------------
+To make any emoji icon match the SFS gold-brown palette, add
+the class "sfs-emoji" to the span wrapping the emoji:
+
+  <span class="sfs-emoji">📅</span>
+
+Then add this CSS:
+  .sfs-emoji {
+    filter: sepia(1) saturate(4) hue-rotate(5deg) brightness(1.05);
+    display: inline-block;
+  }
+
+
+--------------------------------------------------------------------
+STEP 8 — VERIFY
+--------------------------------------------------------------------
+After applying all steps, check:
+  ✓ Background is #0D0D0D (near-black)
+  ✓ Gold constellation animation appears behind content
+  ✓ SmartFlō Systems logo shows in navbar (gold, transparent bg)
+  ✓ Buttons use gold (#FFD700) fill or ghost style
+  ✓ Cards use glass morphism effect (dark + blur + gold border)
+  ✓ No inline <style> or <script> blocks (CSP safe)
+  ✓ No 404 errors for sfs-kit files in browser console
+
+
+--------------------------------------------------------------------
+COLOUR REFERENCE
+--------------------------------------------------------------------
+  Black (background)   #0D0D0D
+  Brown (card/surface) #3B2F2F
+  Gold (accent/CTA)    #FFD700
+  Gold hover           #E6C200
+  Beige (body text)    #F5F5DC
+
+====================================================================

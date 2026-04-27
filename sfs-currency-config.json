@@ -1,0 +1,85 @@
+{
+  "currency": {
+    "symbol": "£",
+    "code": "GBP",
+    "name": "British Pound Sterling",
+    "position": "before",
+    "decimal_separator": ".",
+    "thousands_separator": ",",
+    "decimals": 2
+  },
+  "pricing_tiers": {
+    "starter": {
+      "monthly": 29,
+      "yearly": 290,
+      "display_monthly": "£29/mo",
+      "display_yearly": "£290/yr",
+      "savings": "Save £58"
+    },
+    "professional": {
+      "monthly": 79,
+      "yearly": 790,
+      "display_monthly": "£79/mo",
+      "display_yearly": "£790/yr",
+      "savings": "Save £158"
+    },
+    "enterprise": {
+      "monthly": 199,
+      "yearly": 1990,
+      "display_monthly": "£199/mo",
+      "display_yearly": "£1,990/yr",
+      "savings": "Save £398"
+    }
+  },
+  "project_pricing": {
+    "ai_bot": {
+      "basic": 499,
+      "premium": 999,
+      "enterprise": 2499,
+      "display_basic": "£499",
+      "display_premium": "£999",
+      "display_enterprise": "£2,499"
+    },
+    "booking_system": {
+      "basic": 399,
+      "premium": 799,
+      "enterprise": 1999,
+      "display_basic": "£399",
+      "display_premium": "£799",
+      "display_enterprise": "£1,999"
+    },
+    "ecommerce": {
+      "basic": 599,
+      "premium": 1199,
+      "enterprise": 2999,
+      "display_basic": "£599",
+      "display_premium": "£1,199",
+      "display_enterprise": "£2,999"
+    },
+    "website": {
+      "basic": 299,
+      "premium": 599,
+      "enterprise": 1499,
+      "display_basic": "£299",
+      "display_premium": "£599",
+      "display_enterprise": "£1,499"
+    }
+  },
+  "addon_pricing": {
+    "stripe_integration": 99,
+    "google_calendar_sync": 49,
+    "custom_branding": 149,
+    "priority_support": 199,
+    "white_label": 399,
+    "api_access": 99
+  },
+  "format_examples": {
+    "simple": "£29",
+    "with_decimals": "£29.99",
+    "large_amount": "£2,499",
+    "monthly_subscription": "£79/mo",
+    "yearly_subscription": "£790/yr",
+    "one_time": "£499 one-time",
+    "starting_from": "From £29/mo"
+  }
+}
