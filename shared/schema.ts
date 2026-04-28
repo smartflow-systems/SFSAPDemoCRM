@@ -21,6 +21,7 @@ export const accounts = pgTable("accounts", {
   phone: text("phone"),
   address: text("address"),
   ownerId: varchar("owner_id").references(() => users.id),
+  orgId: text("org_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -33,6 +34,7 @@ export const contacts = pgTable("contacts", {
   title: text("title"),
   accountId: varchar("account_id").references(() => accounts.id),
   ownerId: varchar("owner_id").references(() => users.id),
+  orgId: text("org_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -49,6 +51,7 @@ export const leads = pgTable("leads", {
   ownerId: varchar("owner_id").references(() => users.id),
   notes: text("notes"),
   tags: text("tags").array(),
+  orgId: text("org_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -66,6 +69,7 @@ export const opportunities = pgTable("opportunities", {
   description: text("description"),
   nextAction: text("next_action"),
   nextActionDate: timestamp("next_action_date"),
+  orgId: text("org_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -81,6 +85,7 @@ export const activities = pgTable("activities", {
   ownerId: varchar("owner_id").references(() => users.id),
   dueDate: timestamp("due_date"),
   completed: boolean("completed").default(false),
+  orgId: text("org_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

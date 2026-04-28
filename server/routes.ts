@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { NotificationService, createNotification } from "./websocket";
 import { initializeAutomation, getAutomationService } from "./automation";
 import { seedDemoData } from "./seedDemoData";
+import { requireAuth } from "./middleware/sfs-auth";
 import {
   insertUserSchema, insertAccountSchema, insertContactSchema,
   insertLeadSchema, insertOpportunitySchema, insertActivitySchema
@@ -22,12 +23,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Account routes
-  app.get("/api/accounts", async (req, res) => {
-    const accounts = await storage.getAccounts();
+  app.get("/api/accounts", requireAuth, async (req, res) => {
+    let accounts = await storage.getAccounts();
+    if (req.user?.orgId) {
+      accounts = accounts.filter(a => a.orgId === req.user!.orgId);
+    }
     res.json(accounts);
   });
 
-  app.get("/api/accounts/:id", async (req, res) => {
+  app.get("/api/accounts/:id", requireAuth, async (req, res) => {
     const account = await storage.getAccount(req.params.id);
     if (!account) {
       return res.status(404).json({ message: "Account not found" });
@@ -35,17 +39,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(account);
   });
 
-  app.post("/api/accounts", async (req, res) => {
+  app.post("/api/accounts", requireAuth, async (req, res) => {
     try {
       const accountData = insertAccountSchema.parse(req.body);
-      const account = await storage.createAccount(accountData);
+      const account = await storage.createAccount({
+        ...accountData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
       res.status(201).json(account);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
 
-  app.patch("/api/accounts/:id", async (req, res) => {
+  app.patch("/api/accounts/:id", requireAuth, async (req, res) => {
     try {
       const accountData = insertAccountSchema.partial().parse(req.body);
       const account = await storage.updateAccount(req.params.id, accountData);
@@ -58,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/accounts/:id", async (req, res) => {
+  app.delete("/api/accounts/:id", requireAuth, async (req, res) => {
     const success = await storage.deleteAccount(req.params.id);
     if (!success) {
       return res.status(404).json({ message: "Account not found" });
@@ -67,12 +74,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Contact routes
-  app.get("/api/contacts", async (req, res) => {
-    const contacts = await storage.getContacts();
+  app.get("/api/contacts", requireAuth, async (req, res) => {
+    let contacts = await storage.getContacts();
+    if (req.user?.orgId) {
+      contacts = contacts.filter(c => c.orgId === req.user!.orgId);
+    }
     res.json(contacts);
   });
 
-  app.get("/api/contacts/:id", async (req, res) => {
+  app.get("/api/contacts/:id", requireAuth, async (req, res) => {
     const contact = await storage.getContact(req.params.id);
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
@@ -80,17 +90,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(contact);
   });
 
-  app.post("/api/contacts", async (req, res) => {
+  app.post("/api/contacts", requireAuth, async (req, res) => {
     try {
       const contactData = insertContactSchema.parse(req.body);
-      const contact = await storage.createContact(contactData);
+      const contact = await storage.createContact({
+        ...contactData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
       res.status(201).json(contact);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
 
-  app.patch("/api/contacts/:id", async (req, res) => {
+  app.patch("/api/contacts/:id", requireAuth, async (req, res) => {
     try {
       const contactData = insertContactSchema.partial().parse(req.body);
       const contact = await storage.updateContact(req.params.id, contactData);
@@ -103,7 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/contacts/:id", async (req, res) => {
+  app.delete("/api/contacts/:id", requireAuth, async (req, res) => {
     const success = await storage.deleteContact(req.params.id);
     if (!success) {
       return res.status(404).json({ message: "Contact not found" });
@@ -112,8 +125,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lead routes
-  app.get("/api/leads", async (req, res) => {
+  app.get("/api/leads", requireAuth, async (req, res) => {
     let leads = await storage.getLeads();
+    if (req.user?.orgId) {
+      leads = leads.filter(l => l.orgId === req.user!.orgId);
+    }
 
     // Search functionality
     const search = req.query.search as string;
@@ -181,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/leads/:id", async (req, res) => {
+  app.get("/api/leads/:id", requireAuth, async (req, res) => {
     const lead = await storage.getLead(req.params.id);
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
@@ -189,10 +205,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(lead);
   });
 
-  app.post("/api/leads", async (req, res) => {
+  app.post("/api/leads", requireAuth, async (req, res) => {
     try {
       const leadData = insertLeadSchema.parse(req.body);
-      const lead = await storage.createLead(leadData);
+      const lead = await storage.createLead({
+        ...leadData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
 
       // Send notification about new lead
       if (notificationService && lead.ownerId) {
@@ -215,7 +234,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/leads/:id", async (req, res) => {
+  app.patch("/api/leads/:id", requireAuth, async (req, res) => {
     try {
       const leadData = insertLeadSchema.partial().parse(req.body);
       const lead = await storage.updateLead(req.params.id, leadData);
@@ -238,7 +257,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/leads/:id", async (req, res) => {
+  app.delete("/api/leads/:id", requireAuth, async (req, res) => {
     const success = await storage.deleteLead(req.params.id);
     if (!success) {
       return res.status(404).json({ message: "Lead not found" });
@@ -247,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lead conversion to opportunity
-  app.post("/api/leads/:id/convert", async (req, res) => {
+  app.post("/api/leads/:id/convert", requireAuth, async (req, res) => {
     try {
       const lead = await storage.getLead(req.params.id);
       if (!lead) {
@@ -272,7 +291,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: `Converted from lead: ${lead.name}`
       });
 
-      const opportunity = await storage.createOpportunity(opportunityData);
+      const opportunity = await storage.createOpportunity({
+        ...opportunityData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
 
       // Update lead status to Converted
       await storage.updateLead(req.params.id, { status: 'Converted' });
@@ -301,8 +323,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Opportunity routes
-  app.get("/api/opportunities", async (req, res) => {
+  app.get("/api/opportunities", requireAuth, async (req, res) => {
     let opportunities = await storage.getOpportunities();
+    if (req.user?.orgId) {
+      opportunities = opportunities.filter(o => o.orgId === req.user!.orgId);
+    }
 
     // Search functionality
     const search = req.query.search as string;
@@ -371,7 +396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/opportunities/:id", async (req, res) => {
+  app.get("/api/opportunities/:id", requireAuth, async (req, res) => {
     const opportunity = await storage.getOpportunity(req.params.id);
     if (!opportunity) {
       return res.status(404).json({ message: "Opportunity not found" });
@@ -379,17 +404,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(opportunity);
   });
 
-  app.post("/api/opportunities", async (req, res) => {
+  app.post("/api/opportunities", requireAuth, async (req, res) => {
     try {
       const opportunityData = insertOpportunitySchema.parse(req.body);
-      const opportunity = await storage.createOpportunity(opportunityData);
+      const opportunity = await storage.createOpportunity({
+        ...opportunityData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
       res.status(201).json(opportunity);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
 
-  app.patch("/api/opportunities/:id", async (req, res) => {
+  app.patch("/api/opportunities/:id", requireAuth, async (req, res) => {
     try {
       const opportunityData = insertOpportunitySchema.partial().parse(req.body);
       const opportunity = await storage.updateOpportunity(req.params.id, opportunityData);
@@ -426,7 +454,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/opportunities/:id", async (req, res) => {
+  app.delete("/api/opportunities/:id", requireAuth, async (req, res) => {
     const success = await storage.deleteOpportunity(req.params.id);
     if (!success) {
       return res.status(404).json({ message: "Opportunity not found" });
@@ -435,27 +463,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Activity routes
-  app.get("/api/activities", async (req, res) => {
-    const activities = await storage.getActivities();
+  app.get("/api/activities", requireAuth, async (req, res) => {
+    let activities = await storage.getActivities();
+    if (req.user?.orgId) {
+      activities = activities.filter(a => a.orgId === req.user!.orgId);
+    }
     res.json(activities);
   });
 
-  app.get("/api/activities/lead/:leadId", async (req, res) => {
+  app.get("/api/activities/lead/:leadId", requireAuth, async (req, res) => {
     const activities = await storage.getActivitiesByLead(req.params.leadId);
     res.json(activities);
   });
 
-  app.post("/api/activities", async (req, res) => {
+  app.post("/api/activities", requireAuth, async (req, res) => {
     try {
       const activityData = insertActivitySchema.parse(req.body);
-      const activity = await storage.createActivity(activityData);
+      const activity = await storage.createActivity({
+        ...activityData,
+        ...(req.user?.orgId ? { orgId: req.user.orgId } : {})
+      });
       res.status(201).json(activity);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
   });
 
-  app.patch("/api/activities/:id", async (req, res) => {
+  app.patch("/api/activities/:id", requireAuth, async (req, res) => {
     try {
       const activityData = insertActivitySchema.partial().parse(req.body);
       const activity = await storage.updateActivity(req.params.id, activityData);
@@ -468,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/activities/:id", async (req, res) => {
+  app.delete("/api/activities/:id", requireAuth, async (req, res) => {
     const success = await storage.deleteActivity(req.params.id);
     if (!success) {
       return res.status(404).json({ message: "Activity not found" });
