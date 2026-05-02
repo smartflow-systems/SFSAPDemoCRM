@@ -148,7 +148,7 @@ const SHADOWS = {
 |---|---|
 | SmartFlowSite | Core UI primitives, layout, branding |
 | SocialScaleBooster | Social feed, content cards, analytics |
-| Barber-booker-v1 | Booking calendar, schedule components |
+| Barber-booker-tempate-v1 | Booking calendar, schedule components |
 | sfs-white-label-dashboard | Dashboard grid, charts, tables |
 | sfs-analytics-engine | Data visualization, metric cards |
 
