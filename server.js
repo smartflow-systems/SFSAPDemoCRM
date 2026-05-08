@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
@@ -8,40 +9,44 @@ import { join } from "path";
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || false, credentials: false }));
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false }));
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || false,
+  credentials: false
+}));
+
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false
+}));
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
-// Load config once at startup
 const config = JSON.parse(readFileSync("./public/site.config.json", "utf-8"));
 
-// Ensure data directory exists
 const dataDir = "./data";
 if (!existsSync(dataDir)) {
   mkdirSync(dataDir, { recursive: true });
 }
 
-// Leads database file path
 const leadsFile = join(dataDir, "leads.json");
 
-// Initialize leads file if it doesn't exist
 if (!existsSync(leadsFile)) {
   writeFileSync(leadsFile, JSON.stringify({ leads: [] }, null, 2));
 }
 
-// Helper: Read leads
 function readLeads() {
   try {
-    const data = readFileSync(leadsFile, "utf-8");
-    return JSON.parse(data);
+    const data = JSON.parse(readFileSync(leadsFile, "utf-8"));
+    return Array.isArray(data.leads) ? data : { leads: [] };
   } catch (error) {
     console.error("Error reading leads:", error);
     return { leads: [] };
   }
 }
 
-// Helper: Write leads
 function writeLeads(data) {
   try {
     writeFileSync(leadsFile, JSON.stringify(data, null, 2));
@@ -52,27 +57,114 @@ function writeLeads(data) {
   }
 }
 
-// serve everything from /public
+function normaliseEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
+
+function requireAdmin(req, res, next) {
+  const expectedToken = process.env.ADMIN_API_TOKEN;
+
+  if (!expectedToken) {
+    return res.status(500).json({
+      success: false,
+      message: "ADMIN_API_TOKEN is not configured"
+    });
+  }
+
+  const authHeader = req.get("authorization") || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length)
+    : "";
+
+  if (token !== expectedToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Admin auth required"
+    });
+  }
+
+  next();
+}
+
+async function notifyNewLead(lead) {
+  const webhookUrl = process.env.LEAD_WEBHOOK_URL;
+
+  if (!webhookUrl) {
+    return;
+  }
+
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "lead.created",
+        product: "barber-booker-v1",
+        source: "v0.2-barber-demo",
+        lead
+      })
+    });
+  } catch (error) {
+    console.error("Lead webhook failed:", error.message);
+  }
+}
+
+function csvEscape(value) {
+  const safe = String(value ?? "");
+  return `"${safe.replaceAll('"', '""')}"`;
+}
+
+function leadsToCsv(leads) {
+  const headers = [
+    "id",
+    "firstName",
+    "lastName",
+    "email",
+    "company",
+    "phone",
+    "source",
+    "status",
+    "notes",
+    "lastContactedAt",
+    "nextFollowUpAt",
+    "createdAt",
+    "updatedAt"
+  ];
+
+  const rows = leads.map((lead) =>
+    headers.map((key) => csvEscape(lead[key])).join(",")
+  );
+
+  return [headers.join(","), ...rows].join("\n");
+}
+
 app.use(express.static("public"));
 
-// health check with site info
-app.get("/health", (_req, res) => res.json({
-  ok: true,
-  siteName: config.siteName,
-  version: config.version
-}));
-app.get("/api/health", (_req, res) => res.json({
-  ok: true,
-  siteName: config.siteName,
-  version: config.version
-}));
+app.get("/health", (_req, res) => {
+  res.json({
+    ok: true,
+    siteName: config.siteName,
+    version: config.version
+  });
+});
 
-// API: Submit Lead
-app.post("/api/leads", (req, res) => {
+app.get("/api/health", (_req, res) => {
+  res.json({
+    ok: true,
+    siteName: config.siteName,
+    version: config.version
+  });
+});
+
+app.post("/api/leads", async (req, res) => {
   try {
-    const { firstName, lastName, email, company, phone, source } = req.body;
+    const firstName = String(req.body.firstName || "").trim();
+    const lastName = String(req.body.lastName || "").trim();
+    const email = normaliseEmail(req.body.email);
+    const company = String(req.body.company || "").trim();
+    const phone = String(req.body.phone || "").trim();
+    const source = String(req.body.source || "direct").trim();
 
-    // Validate required fields
     if (!firstName || !lastName || !email) {
       return res.status(400).json({
         success: false,
@@ -80,8 +172,8 @@ app.post("/api/leads", (req, res) => {
       });
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(email)) {
       return res.status(400).json({
         success: false,
@@ -89,11 +181,12 @@ app.post("/api/leads", (req, res) => {
       });
     }
 
-    // Read existing leads
     const data = readLeads();
 
-    // Check for duplicate email
-    const existingLead = data.leads.find(lead => lead.email === email);
+    const existingLead = data.leads.find((lead) =>
+      normaliseEmail(lead.email) === email
+    );
+
     if (existingLead) {
       return res.status(200).json({
         success: true,
@@ -102,110 +195,175 @@ app.post("/api/leads", (req, res) => {
       });
     }
 
-    // Create new lead
+    const now = new Date().toISOString();
+
     const newLead = {
-      id: `lead_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `lead_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       firstName,
       lastName,
       email,
-      company: company || "",
-      phone: phone || "",
-      source: source || "direct",
+      company,
+      phone,
+      source,
       status: "new",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      notes: "",
+      lastContactedAt: null,
+      nextFollowUpAt: null,
+      createdAt: now,
+      updatedAt: now
     };
 
-    // Add lead to array
     data.leads.push(newLead);
 
-    // Save to file
     if (!writeLeads(data)) {
       throw new Error("Failed to save lead");
     }
 
     console.log(`✓ New lead captured: ${email}`);
 
-    // Return success
-    res.status(201).json({
+    await notifyNewLead(newLead);
+
+    return res.status(201).json({
       success: true,
       message: "Lead captured successfully",
       leadId: newLead.id
     });
-
   } catch (error) {
     console.error("Lead submission error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Internal server error"
     });
   }
 });
 
-// API: Get All Leads (admin only - no auth for now, add later)
-app.get("/api/leads", (_req, res) => {
+app.get("/api/leads", requireAdmin, (_req, res) => {
   try {
     const data = readLeads();
-    res.json({
+
+    return res.json({
       success: true,
       count: data.leads.length,
       leads: data.leads
     });
   } catch (error) {
     console.error("Error fetching leads:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to fetch leads"
     });
   }
 });
 
-// API: Stripe Checkout (placeholder - requires Stripe configuration)
-app.post("/api/stripe/checkout", async (req, res) => {
+app.patch("/api/leads/:id", requireAdmin, (req, res) => {
   try {
-    const { planId, successUrl, cancelUrl } = req.body;
+    const allowedStatuses = ["new", "contacted", "demo_booked", "won", "lost"];
+    const data = readLeads();
+    const lead = data.leads.find((item) => item.id === req.params.id);
 
-    // Load pricing data
-    const pricingData = JSON.parse(readFileSync("./public/pricing.json", "utf-8"));
-    const plan = pricingData.plans.find(p => p.id === planId);
-
-    if (!plan) {
+    if (!lead) {
       return res.status(404).json({
         success: false,
-        message: "Plan not found"
+        message: "Lead not found"
       });
     }
 
-    // TODO: Implement Stripe checkout session
-    // For now, return a placeholder response
-    // You'll need to:
-    // 1. Install stripe package: npm install stripe
-    // 2. Add STRIPE_SECRET_KEY to .env
-    // 3. Create Stripe checkout session
+    if (req.body.status) {
+      if (!allowedStatuses.includes(req.body.status)) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid status. Use one of: ${allowedStatuses.join(", ")}`
+        });
+      }
 
-    console.log(`Checkout requested for plan: ${planId}`);
+      lead.status = req.body.status;
+    }
 
-    // Placeholder response
-    res.json({
+    if (typeof req.body.notes === "string") {
+      lead.notes = req.body.notes.trim();
+    }
+
+    if (typeof req.body.lastContactedAt === "string") {
+      lead.lastContactedAt = req.body.lastContactedAt;
+    }
+
+    if (typeof req.body.nextFollowUpAt === "string") {
+      lead.nextFollowUpAt = req.body.nextFollowUpAt;
+    }
+
+    lead.updatedAt = new Date().toISOString();
+
+    if (!writeLeads(data)) {
+      throw new Error("Failed to update lead");
+    }
+
+    return res.json({
       success: true,
-      message: "Stripe integration pending",
-      planId,
-      plan: plan.name,
-      price: plan.price,
-      // In production, return: url: session.url
-      url: `/contact.html?plan=${planId}` // Temporary redirect to contact
+      lead
     });
-
   } catch (error) {
-    console.error("Checkout error:", error);
-    res.status(500).json({
+    console.error("Lead update error:", error);
+    return res.status(500).json({
       success: false,
-      message: "Failed to create checkout session"
+      message: "Failed to update lead"
     });
   }
 });
 
-// port
+app.get("/api/leads.csv", requireAdmin, (_req, res) => {
+  try {
+    const data = readLeads();
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=sfs-leads.csv");
+
+    return res.send(leadsToCsv(data.leads));
+  } catch (error) {
+    console.error("CSV export error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to export leads"
+    });
+  }
+});
+
+app.get("/api/payment-link", (_req, res) => {
+  const url = process.env.STRIPE_PAYMENT_LINK_BARBER;
+
+  if (!url) {
+    return res.status(501).json({
+      success: false,
+      message: "STRIPE_PAYMENT_LINK_BARBER is not configured yet"
+    });
+  }
+
+  return res.json({
+    success: true,
+    url
+  });
+});
+
+app.post("/api/stripe/checkout", (_req, res) => {
+  const url = process.env.STRIPE_PAYMENT_LINK_BARBER;
+
+  if (!url) {
+    return res.status(501).json({
+      success: false,
+      message: "Stripe Payment Link is not configured yet"
+    });
+  }
+
+  return res.json({
+    success: true,
+    message: "Redirect to Stripe Payment Link",
+    url
+  });
+});
+
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`serving on ${port}`));
+
+app.listen(port, () => {
+  console.log(`serving on ${port}`);
+});
+
 export default app;
