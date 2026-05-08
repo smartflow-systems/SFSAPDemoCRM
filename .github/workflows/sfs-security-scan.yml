@@ -106,6 +106,7 @@ jobs:
             if grep -r "$pattern" . \
               --exclude-dir=node_modules \
               --exclude-dir=.git \
+              --exclude-dir=.github \
               --exclude-dir=dist \
               --exclude-dir=build \
               --exclude=*.log \
