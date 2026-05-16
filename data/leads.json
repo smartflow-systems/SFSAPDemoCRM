@@ -8,9 +8,27 @@
       "company": "",
       "phone": "7521083350",
       "source": "direct",
-      "status": "new",
+      "status": "contacted",
       "createdAt": "2026-04-18T10:51:37.729Z",
-      "updatedAt": "2026-04-18T10:51:37.729Z"
+      "updatedAt": "2026-05-08T17:54:05.410Z",
+      "notes": "Called once. Interested in booking demo.",
+      "lastContactedAt": "2026-05-08T10:00:00.000Z",
+      "nextFollowUpAt": "2026-05-09T10:00:00.000Z"
+    },
+    {
+      "id": "lead_1778262420071_1uxvuokw6",
+      "firstName": "Test",
+      "lastName": "Barber",
+      "email": "test@example.com",
+      "company": "Test Cuts",
+      "phone": "07123456789",
+      "source": "v0.2-barber-demo",
+      "status": "new",
+      "notes": "",
+      "lastContactedAt": null,
+      "nextFollowUpAt": null,
+      "createdAt": "2026-05-08T17:47:00.071Z",
+      "updatedAt": "2026-05-08T17:47:00.071Z"
     }
   ]
 }

@@ -226,3 +226,4 @@ lerna-debug.log*
 *.swp
 *.swo
 *~
+.sfs-backups/
